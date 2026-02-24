@@ -6,7 +6,7 @@
     <title>特洛伊AI賦能學院 - 專屬直播</title>
     <style>
         :root {
-            /* 🌟 沿用課程區的高質感色系 */
+            /* 沿用課程區的高質感色系 */
             --primary-yellow: #F59E0B; 
             --primary-hover: #D97706;      
             --slate-blue: #1F2937;     
@@ -131,7 +131,7 @@
     </div>
 
     <div class="section admin-section" id="admin-panel" style="display: none;">
-        <h3 style="margin-top:0; color: var(--danger-color);">👑 極速發布後台 (自動建檔)</h3>
+        <h3 style="margin-top:0; color: var(--danger-color);">極速發布後台 (自動建檔)</h3>
         <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">歡迎站長！日期、時間、課程編號將由系統自動產生。</p>
         
         <button onclick="window.open('https://meet.google.com/new', '_blank')" style="background: var(--slate-blue); box-shadow: none;">1. 點此開啟 Google Meet (並複製 YouTube ID)</button>
@@ -141,7 +141,7 @@
             <input type="text" id="live-title" class="input-box" placeholder="請輸入課程標題 (必填)">
             <input type="text" id="live-yt" class="input-box" placeholder="貼上 YouTube_ID (必填：例如 dQw4w9WgXcQ)">
             <textarea id="live-desc" class="input-box" placeholder="課程簡述 (選填)" rows="3"></textarea>
-            <button onclick="submitLive()" id="btn-submit-live" class="btn-danger" style="margin-bottom: 0;">🚀 送出發布</button>
+            <button onclick="submitLive()" id="btn-submit-live" class="btn-danger" style="margin-bottom: 0;">送出發布</button>
         </div>
     </div>
 
@@ -172,14 +172,14 @@
             <div style="margin-top:20px; border-top: 2px solid var(--glass-border); padding-top: 20px;">
                 <strong style="color:var(--slate-blue); display:block; margin-bottom:10px;">新增留言</strong>
                 <textarea id="new-comment" class="input-box" placeholder="留下您的心得或問題..." rows="3" style="margin-bottom: 10px;"></textarea>
-                <button onclick="submitComment()" id="btn-submit-comment" style="width: auto; margin-bottom: 0;">📤 送出留言</button>
+                <button onclick="submitComment()" id="btn-submit-comment" style="width: auto; margin-bottom: 0;">送出留言</button>
             </div>
         </div>
     </div>
 
     <script>
-        // 🚨 記得換上你最新的 GAS 部署網址！
-        const GAS_LIVE_URL = 'https://script.google.com/macros/s/AKfycbxGCuY4Anrq9jaHHDtFCgAR-Yu1cy7TGFpA-qcqRiwLcxz9JXHO12xT186Gm-rjYWQm/exec';
+        // 記得換上你最新的 GAS 部署網址！
+        const GAS_LIVE_URL = 'https://script.google.com/macros/s/AKfycbxBra-xYPly-vYUa4CHa_pTMcm_RHgUTSf-_Eq36uguL2_EoKMAYJ_TQtR_zPesc-B9/exec';
         const ADMIN_EMAIL = 'alwayslucky2hand@gmail.com';
 
         let currentUserEmail = ''; 
@@ -231,12 +231,12 @@
                 
                 // 登入成功，設定使用者並開放內容
                 currentUserEmail = email;
-                document.getElementById('login-status').innerText = `✅ 已登入學員：${email}`;
+                document.getElementById('login-status').innerText = `已登入學員：${email}`;
                 document.getElementById('step-1').style.display = 'none';
                 document.getElementById('step-2').style.display = 'none';
                 document.getElementById('logout-btn-container').style.display = 'block';
                 
-                // 💡 關鍵：確認是否為站長，顯示發布後台
+                // 關鍵：確認是否為站長，顯示發布後台
                 if(currentUserEmail.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
                     document.getElementById('admin-panel').style.display = 'block';
                 }
@@ -282,7 +282,7 @@
             if (allLiveData.length === 0) return listContainer.innerHTML = '<p class="system-msg">目前沒有任何紀錄喔！</p>';
 
             allLiveData.forEach(post => {
-                let badge = post.status === 'LIVE' ? '<span class="tag-badge tag-live">🔴 LIVE 進行中</span>' : '<span class="tag-badge tag-vod">🎬 課程回放</span>';
+                let badge = post.status === 'LIVE' ? '<span class="tag-badge tag-live">LIVE 進行中</span>' : '<span class="tag-badge tag-vod">課程回放</span>';
                 listContainer.innerHTML += `
                     <div class="post-card">
                         <div class="post-title-row">
@@ -350,7 +350,7 @@
             currentPost.comments.push(newCommentStr); input.value = ''; renderComments();
             
             fetch(GAS_LIVE_URL, { method: 'POST', body: JSON.stringify({ action: 'add_comment', courseId: currentPost.courseId, comment: newCommentStr }) })
-            .then(() => { btn.disabled = false; btn.innerText = "📤 送出留言"; });
+            .then(() => { btn.disabled = false; btn.innerText = "送出留言"; });
         }
 
         function submitLive() {
@@ -367,12 +367,12 @@
                     action: 'add_live', title: title, youtubeId: ytId, description: document.getElementById('live-desc').value
                 })
             }).then(() => {
-                alert("建立成功！"); btn.disabled = false; btn.innerText = "🚀 送出發布";
+                alert("建立成功！"); btn.disabled = false; btn.innerText = "送出發布";
                 document.getElementById('live-title').value = ''; document.getElementById('live-yt').value = ''; document.getElementById('live-desc').value = '';
                 fetchLiveData(); 
             }).catch(err => {
                 alert("網路連線錯誤，請稍後再試。");
-                btn.disabled = false; btn.innerText = "🚀 送出發布";
+                btn.disabled = false; btn.innerText = "送出發布";
             });
         }
 
