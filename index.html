@@ -2,95 +2,139 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover">
     <title>特洛伊AI賦能學院 - 專屬直播</title>
     <style>
         :root {
-            var(--primary-yellow): #F59E0B; --primary-hover: #D97706; --slate-blue: #1F2937; --accent-green: #10B981; 
-            --bg-pure: #FFFFFF; --panel-bg: #FFFFFF; --input-bg: #F8FAFC; --text-dark: #111827; --text-muted: #6B7280; 
-            --glass-border: #CBD5E1; --radius-soft: 12px; --danger-color: #EF4444; 
+            --primary-yellow: #F59E0B; --primary-hover: #D97706; --slate-blue: #1F2937; --accent-green: #10B981; 
+            --bg-pure: #F3F4F6; /* 稍微加深外圍底色，讓白色卡片更浮凸 */
+            --panel-bg: #FFFFFF; --input-bg: #F8FAFC; --text-dark: #111827; --text-muted: #6B7280; 
+            --glass-border: #E5E7EB; --radius-soft: 16px; /* 加大圓角讓手機觀看更柔和 */
+            --danger-color: #EF4444; 
         }
         
         *, *::before, *::after { box-sizing: border-box; }
-        body { font-family: 'Microsoft JhengHei', sans-serif; line-height: 1.8; max-width: 800px; margin: 0 auto; padding: 40px 20px; background: #FFFFFF; color: #111827; min-height: 100vh; }
-        h1, h2, h3 { color: #1F2937; letter-spacing: 0.05em; font-weight: bold; margin-bottom: 24px; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Microsoft JhengHei', sans-serif; 
+            line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; 
+            background: var(--bg-pure); color: var(--text-dark); min-height: 100vh; 
+            -webkit-font-smoothing: antialiased; /* 讓字體在手機上更平滑 */
+        }
         
-        .section { background: #FFFFFF; padding: 40px; margin-bottom: 40px; border-radius: 12px; border: 1px solid #CBD5E1; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); }
-        .admin-section { border-left: 4px solid #EF4444; background: #fef2f2; }
+        h1, h2, h3 { color: var(--slate-blue); letter-spacing: 0.02em; font-weight: 800; margin-bottom: 20px; line-height: 1.3; }
+        h1 { font-size: 1.8rem; text-align: center; margin-top: 10px; margin-bottom: 30px;}
         
-        .input-box, textarea { padding: 14px 18px; border: 1px solid #CBD5E1; border-radius: 8px; font-size: 1rem; width: 100%; margin-bottom: 15px; background: #F8FAFC; color: #111827; font-family: inherit;}
-        .input-box:focus, textarea:focus { outline: none; border-color: #F59E0B; background: #FFFFFF; box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2); }
+        .section { background: var(--panel-bg); padding: 30px; margin-bottom: 25px; border-radius: var(--radius-soft); border: 1px solid var(--glass-border); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); }
         
-        button { background: #F59E0B; color: #ffffff; border: none; padding: 14px 28px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1rem; transition: background 0.2s; width: 100%; margin-bottom: 10px; }
-        button:hover { background: #D97706; } 
-        button:disabled { background: #E5E7EB; color: #6B7280; cursor: not-allowed; }
-        .btn-danger { background: #EF4444; } .btn-danger:hover { background: #DC2626; }
+        /* 管理員專區特效：加入淡入動畫 */
+        .admin-section { border-left: 5px solid var(--danger-color); background: #fef2f2; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* ⚠️ 關鍵防護：強制 font-size: 16px 避免 iOS Safari 點擊輸入框時自動放大版面 */
+        .input-box, textarea { 
+            padding: 16px; border: 1px solid var(--glass-border); border-radius: 12px; 
+            font-size: 16px !important; width: 100%; margin-bottom: 15px; 
+            background: var(--input-bg); color: var(--text-dark); font-family: inherit;
+            appearance: none; /* 移除手機端預設陰影 */
+        }
+        .input-box:focus, textarea:focus { outline: none; border-color: var(--primary-yellow); background: #FFF; box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.15); }
+        
+        /* 按鈕優化：加大觸控面積 */
+        button { 
+            background: var(--primary-yellow); color: #ffffff; border: none; 
+            padding: 16px 24px; border-radius: 12px; cursor: pointer; font-weight: bold; 
+            font-size: 1rem; transition: all 0.2s; width: 100%; margin-bottom: 12px; 
+            box-shadow: 0 4px 6px rgba(245, 158, 11, 0.2); 
+            display: flex; justify-content: center; align-items: center; gap: 8px;
+        }
+        button:active { transform: scale(0.98); } /* 手機點擊回饋感 */
+        button:hover { background: var(--primary-hover); } 
+        button:disabled { background: #E5E7EB; color: #9CA3AF; cursor: not-allowed; box-shadow: none; transform: none; }
+        .btn-danger { background: var(--danger-color); box-shadow: 0 4px 6px rgba(239, 68, 68, 0.2); } 
+        .btn-danger:hover { background: #DC2626; }
+        .btn-outline { background: transparent; color: var(--slate-blue); border: 1.5px solid var(--glass-border); box-shadow: none; }
         
         .inline-msg { font-size: 0.9em; font-weight: bold; display: block; margin-top: 5px; min-height: 24px; }
-        .msg-error { color: #EF4444; } .msg-success { color: #10B981; }
-
-        .post-card { background: #FFFFFF; border: 1px solid #CBD5E1; padding: 35px; margin-bottom: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); }
-        .post-title-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
-        .post-title { font-size: 1.5em; margin: 0; font-weight: bold; }
-        .tag-badge { padding: 4px 12px; border-radius: 6px; font-size: 0.85em; font-weight: bold; color: white; display: inline-block; white-space: nowrap; }
+        
+        /* 卡片佈局優化 */
+        .post-card { background: var(--panel-bg); border: 1px solid var(--glass-border); padding: 25px; margin-bottom: 20px; border-radius: var(--radius-soft); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02); }
+        .post-title-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; gap: 10px; }
+        .post-title { font-size: 1.3em; margin: 0; font-weight: bold; line-height: 1.4; }
+        
+        .tag-badge { padding: 6px 12px; border-radius: 20px; font-size: 0.8em; font-weight: bold; color: white; display: inline-block; white-space: nowrap; }
         .tag-live { background: #EF4444; animation: pulse 2s infinite; }
-        .tag-vod { background: #1F2937; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+        .tag-vod { background: var(--slate-blue); }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.8; } 100% { opacity: 1; } }
 
-        .post-meta { font-size: 0.9em; color: #6B7280; margin-bottom: 20px; display: flex; gap: 15px; flex-wrap: wrap; }
-        .post-excerpt { margin-bottom: 25px; }
-        .video-wrapper { margin-bottom: 25px; border-radius: 12px; overflow: hidden; background: #000; }
+        .post-meta { font-size: 0.85em; color: var(--text-muted); margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap; }
+        .post-meta span { background: var(--input-bg); padding: 4px 10px; border-radius: 6px; }
+        .post-excerpt { margin-bottom: 20px; color: #4B5563; font-size: 0.95rem; }
+        
+        /* 播放器比例完美維持 */
+        .video-wrapper { margin-bottom: 25px; border-radius: 12px; overflow: hidden; background: #000; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .video-container { position: relative; padding-bottom: 56.25%; height: 0; }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-        .btn-interact { background: transparent; color: #1F2937; border: 1px solid #1F2937; width: auto; padding: 8px 16px; margin-bottom: 0; }
-        .comment-item { background: #FFFFFF; padding: 16px; border-radius: 8px; margin-bottom: 16px; border-left: 4px solid #F59E0B; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .system-msg { text-align: center; color: #1F2937; padding: 40px 20px; font-weight: bold; }
+        
+        .comment-item { background: var(--input-bg); padding: 16px; border-radius: 12px; margin-bottom: 12px; border-left: 4px solid var(--primary-yellow); font-size: 0.95rem; }
+        .system-msg { text-align: center; color: var(--text-muted); padding: 40px 20px; font-weight: bold; }
 
-        @media (max-width: 600px) { body { padding: 20px 15px; } .section, .post-card { padding: 25px 20px; } }
+        /* 📱 手機端終極優化 (螢幕小於 600px 時觸發) */
+        @media (max-width: 600px) { 
+            body { padding: 15px 10px; } 
+            h1 { font-size: 1.5rem; }
+            .section, .post-card { padding: 20px 15px; } 
+            
+            /* 讓輸入框和按鈕在手機上垂直排列，更好點擊 */
+            #step-1 { flex-direction: column; gap: 0; }
+            #step-1 input, #step-1 button { width: 100%; flex: none; }
+            
+            /* 標題與標籤在手機上垂直排列，避免擠壓 */
+            .post-title-row { flex-direction: column; }
+            .tag-badge { align-self: flex-start; }
+        }
     </style>
 </head>
 <body>
 
-    <h1>特洛伊AI賦能學院 直播區</h1>
+    <h1>特洛伊AI賦能學院</h1>
 
     <div class="section" id="login-section">
         <h3 style="margin-top:0;">會員登入</h3>
-        <p id="login-status" style="color: #F59E0B; font-weight: bold; margin-bottom: 15px;">狀態：未登入</p>
-        <div id="step-1" style="display: flex; gap: 10px; flex-wrap: wrap;">
-            <input type="email" id="email" class="input-box" placeholder="輸入會員 Email" style="flex: 2; margin-bottom: 0;">
-            <button onclick="requestOTP()" id="btn-otp" style="flex: 1; margin-bottom: 0;">登入 (測試模式免密碼)</button>
+        <p id="login-status" style="color: var(--primary-yellow); font-weight: bold; margin-bottom: 15px;">狀態：未登入</p>
+        <div id="step-1" style="display: flex; gap: 10px;">
+            <input type="email" id="email" class="input-box" placeholder="請輸入 Email (站長請輸入專屬信箱)" style="margin-bottom: 10px;">
+            <button onclick="requestOTP()" id="btn-otp">登入進入教室</button>
         </div>
-        <div id="logout-btn-container" style="display: none; margin-top: 25px; border-top: 1px dashed #CBD5E1; padding-top: 20px;">
-            <button onclick="logout()" style="background: #EF4444; width: auto; margin-bottom: 0;">登出</button>
+        <div id="logout-btn-container" style="display: none; margin-top: 15px; border-top: 1px solid var(--glass-border); padding-top: 20px;">
+            <button onclick="logout()" class="btn-outline">登出切換帳號</button>
         </div>
     </div>
 
     <div class="section admin-section" id="admin-panel" style="display: none;">
-        <h3 style="margin-top:0; color: #EF4444;">👑 極速發布後台 (自動建檔)</h3>
-        <p style="color: #6B7280; font-size: 0.9rem; margin-bottom: 15px;">日期、時間、課程編號將由系統自動產生。</p>
+        <h3 style="margin-top:0; color: var(--danger-color);">👑 極速發布後台 (自動建檔)</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">歡迎站長！日期、時間、課程編號將由系統自動產生。</p>
         
-        <button onclick="window.open('https://meet.google.com/new', '_blank')" style="background: #1F2937; margin-bottom: 20px;">1. 點此開啟 Google Meet (並複製 YouTube ID)</button>
+        <button onclick="window.open('https://meet.google.com/new', '_blank')" style="background: var(--slate-blue); box-shadow: none;">1. 點此開啟 Google Meet (並複製 YouTube ID)</button>
         
-        <div style="border-top: 1px dashed #CBD5E1; padding-top: 20px; margin-bottom: 10px;">
-            <label style="font-weight: bold; display: block; margin-bottom: 5px;">2. 貼上資訊並發布</label>
+        <div style="background: #FFF; padding: 20px; border-radius: 12px; margin-top: 15px; border: 1px solid #FECACA;">
+            <label style="font-weight: bold; display: block; margin-bottom: 10px; color: var(--danger-color);">2. 貼上資訊並發布</label>
             <input type="text" id="live-title" class="input-box" placeholder="請輸入課程標題 (必填)">
             <input type="text" id="live-yt" class="input-box" placeholder="貼上 YouTube_ID (必填：例如 dQw4w9WgXcQ)">
             <textarea id="live-desc" class="input-box" placeholder="課程簡述 (選填)" rows="3"></textarea>
+            <button onclick="submitLive()" id="btn-submit-live" class="btn-danger" style="margin-bottom: 0;">🚀 送出發布</button>
         </div>
-        
-        <button onclick="submitLive()" id="btn-submit-live" class="btn-danger">送出發布</button>
     </div>
 
     <div id="list-section" style="display: none;">
-        <div id="loading-list" class="system-msg">同步直播清單中...</div>
+        <div id="loading-list" class="system-msg">正在為您準備專屬課程清單...</div>
         <div id="post-list"></div>
     </div>
 
-    <div class="section" id="detail-section" style="display: none;">
-        <button onclick="backToList()" style="background: #F8FAFC; color: #1F2937; border: 1px solid #CBD5E1; width: auto;">返回列表</button>
+    <div class="section" id="detail-section" style="display: none; padding-top: 20px;">
+        <button onclick="backToList()" class="btn-outline" style="margin-bottom: 20px;">← 返回課程列表</button>
         
-        <div class="post-meta" id="detail-meta" style="margin-top: 25px;"></div>
-        <h2 id="detail-title" style="margin-top: 5px; font-size: 2em;">載入中...</h2>
+        <div class="post-meta" id="detail-meta"></div>
+        <h2 id="detail-title" style="margin-top: 0; font-size: 1.6em;">載入中...</h2>
         
         <div class="video-wrapper">
             <div id="video-player" class="video-container">
@@ -98,14 +142,14 @@
             </div>
         </div>
 
-        <div id="detail-content" style="font-size: 1.1em; line-height: 2; margin-bottom: 30px;"></div>
+        <div id="detail-content" style="font-size: 1rem; line-height: 1.8; margin-bottom: 30px; color: #4B5563;"></div>
         
         <div id="comment-section">
-            <h3 style="border-bottom: 2px solid #CBD5E1; padding-bottom: 10px;">留言討論區</h3>
-            <div id="comments-list"></div>
-            <div style="margin-top:20px;">
-                <textarea id="new-comment" class="input-box" placeholder="留下您的心得或問題..." rows="3"></textarea>
-                <button onclick="submitComment()" id="btn-submit-comment" style="width: auto;">送出留言</button>
+            <h3 style="border-bottom: 2px solid var(--glass-border); padding-bottom: 10px; font-size: 1.2rem;">留言討論區</h3>
+            <div id="comments-list" style="margin-top: 15px;"></div>
+            <div style="margin-top:20px; background: var(--bg-pure); padding: 15px; border-radius: 12px;">
+                <textarea id="new-comment" class="input-box" placeholder="留下您的心得或問題..." rows="2" style="margin-bottom: 10px;"></textarea>
+                <button onclick="submitComment()" id="btn-submit-comment" style="margin-bottom: 0;">📤 送出留言</button>
             </div>
         </div>
     </div>
@@ -119,17 +163,20 @@
         let allLiveData = []; 
         let currentPost = null; 
 
-        // 快速測試登入
+        // 登入邏輯 (包含解鎖管理員後台)
         function requestOTP() {
             const email = document.getElementById('email').value.trim();
             if (!email) return alert('請先輸入 Email');
             
             currentUserEmail = email;
-            document.getElementById('login-status').innerText = `✅ 已登入學員：${email}`;
+            document.getElementById('login-status').innerText = `✅ 已登入：${email}`;
             document.getElementById('step-1').style.display = 'none';
             document.getElementById('logout-btn-container').style.display = 'block';
             
-            if(currentUserEmail === ADMIN_EMAIL) document.getElementById('admin-panel').style.display = 'block';
+            // 💡 關鍵：這裡會比對輸入的信箱，如果是站長，就解鎖發布後台 (轉成小寫比對避免大小寫誤判)
+            if(currentUserEmail.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+                document.getElementById('admin-panel').style.display = 'block';
+            }
             
             document.getElementById('list-section').style.display = 'block';
             fetchLiveData(); 
@@ -140,6 +187,7 @@
             document.getElementById('login-status').innerText = '狀態：未登入'; 
             document.getElementById('step-1').style.display = 'flex'; 
             document.getElementById('logout-btn-container').style.display = 'none'; 
+            // 登出時把所有區塊藏起來
             document.getElementById('admin-panel').style.display = 'none';
             document.getElementById('list-section').style.display = 'none';
             document.getElementById('detail-section').style.display = 'none';
@@ -150,6 +198,8 @@
                 allLiveData = data.reverse(); 
                 document.getElementById('loading-list').style.display = 'none';
                 renderList();
+            }).catch(err => {
+                document.getElementById('loading-list').innerText = '資料載入失敗，請稍後再試。';
             });
         }
 
@@ -159,13 +209,16 @@
             if (allLiveData.length === 0) return listContainer.innerHTML = '<p class="system-msg">目前沒有任何紀錄喔！</p>';
 
             allLiveData.forEach(post => {
-                let badge = post.status === 'LIVE' ? '<span class="tag-badge tag-live">🔴 LIVE</span>' : '<span class="tag-badge tag-vod">🎬 VOD</span>';
+                let badge = post.status === 'LIVE' ? '<span class="tag-badge tag-live">🔴 LIVE 進行中</span>' : '<span class="tag-badge tag-vod">🎬 課程回放</span>';
                 listContainer.innerHTML += `
                     <div class="post-card">
-                        <div class="post-title-row"><h3 class="post-title">${post.title}</h3><div>${badge}</div></div>
-                        <div class="post-meta"><span>${post.courseId}</span><span>日期：${post.date}</span></div>
-                        <div class="post-excerpt">${post.description}</div>
-                        <button onclick="enterClass('${post.courseId}')" style="width:auto;">進入課程</button>
+                        <div class="post-title-row">
+                            <h3 class="post-title">${post.title}</h3>
+                            <div>${badge}</div>
+                        </div>
+                        <div class="post-meta"><span>編號：${post.courseId}</span><span>開課：${post.date}</span></div>
+                        <div class="post-excerpt">${post.description || '無內容簡述'}</div>
+                        <button onclick="enterClass('${post.courseId}')" style="margin-bottom:0;">進入教室</button>
                     </div>`;
             });
         }
@@ -174,20 +227,25 @@
             currentPost = allLiveData.find(p => p.courseId === courseId);
             if(!currentPost) return;
 
+            // 背景寫入觀看紀錄
             fetch(GAS_LIVE_URL, { method: 'POST', body: JSON.stringify({ action: 'record_view', courseId: currentPost.courseId, viewerName: currentUserEmail }) });
 
             document.getElementById('list-section').style.display = 'none';
-            document.getElementById('admin-panel').style.display = 'none';
+            document.getElementById('admin-panel').style.display = 'none'; // 進入教室時先隱藏後台讓版面乾淨
             document.getElementById('detail-section').style.display = 'block';
-            window.scrollTo(0, 0);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
 
             document.getElementById('detail-title').innerText = currentPost.title;
-            document.getElementById('detail-meta').innerHTML = `<span>編號：${currentPost.courseId}</span> <span>時間：${currentPost.date} ${currentPost.time}</span>`;
+            document.getElementById('detail-meta').innerHTML = `<span>ID: ${currentPost.courseId}</span> <span>${currentPost.date} ${currentPost.time}</span>`;
             
             const iframe = document.getElementById('video-iframe');
-            if(currentPost.status === 'LIVE' && currentPost.youtubeId) iframe.src = `https://www.youtube.com/embed/${currentPost.youtubeId}?autoplay=1&rel=0`;
-            else if (currentPost.status === 'VOD' && currentPost.driveId) iframe.src = `https://drive.google.com/file/d/${currentPost.driveId}/preview`;
-            else iframe.src = '';
+            if(currentPost.status === 'LIVE' && currentPost.youtubeId) {
+                iframe.src = `https://www.youtube.com/embed/${currentPost.youtubeId}?autoplay=1&rel=0&modestbranding=1`;
+            } else if (currentPost.status === 'VOD' && currentPost.driveId) {
+                iframe.src = `https://drive.google.com/file/d/${currentPost.driveId}/preview`;
+            } else {
+                iframe.src = '';
+            }
 
             document.getElementById('detail-content').innerText = currentPost.description;
             renderComments();
@@ -195,11 +253,14 @@
 
         function renderComments() {
             const list = document.getElementById('comments-list'); list.innerHTML = '';
-            if (currentPost.comments.length === 0) return list.innerHTML = '<p style="color:#6B7280;">尚無留言，成為第一個發問的人吧！</p>';
+            if (currentPost.comments.length === 0) return list.innerHTML = '<p style="color:#6B7280; font-size: 0.95rem;">尚無留言，成為第一個發問的人吧！</p>';
             currentPost.comments.forEach(c => {
                 const match = c.match(/^(\[\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}\]【.*?】)(.*)/s);
-                if(match) list.innerHTML += `<div class="comment-item"><div style="font-weight:bold; color:#1F2937; font-size:0.9rem; margin-bottom:4px;">${match[1]}</div><div>${match[2].replace(/\n/g, '<br>')}</div></div>`;
-                else list.innerHTML += `<div class="comment-item">${c.replace(/\n/g, '<br>')}</div>`;
+                if(match) {
+                    list.innerHTML += `<div class="comment-item"><div style="font-weight:bold; color:var(--slate-blue); font-size:0.85rem; margin-bottom:4px;">${match[1]}</div><div>${match[2].replace(/\n/g, '<br>')}</div></div>`;
+                } else {
+                    list.innerHTML += `<div class="comment-item">${c.replace(/\n/g, '<br>')}</div>`;
+                }
             });
         }
 
@@ -215,17 +276,16 @@
             currentPost.comments.push(newCommentStr); input.value = ''; renderComments();
             
             fetch(GAS_LIVE_URL, { method: 'POST', body: JSON.stringify({ action: 'add_comment', courseId: currentPost.courseId, comment: newCommentStr }) })
-            .then(() => { btn.disabled = false; btn.innerText = "送出留言"; });
+            .then(() => { btn.disabled = false; btn.innerText = "📤 送出留言"; });
         }
 
-        // 極簡發布邏輯
         function submitLive() {
             const title = document.getElementById('live-title').value.trim();
             const ytId = document.getElementById('live-yt').value.trim();
             const btn = document.getElementById('btn-submit-live');
             
             if(!title || !ytId) return alert("標題與 YouTube ID 為必填！");
-            btn.disabled = true; btn.innerText = "建立中...";
+            btn.disabled = true; btn.innerText = "建立中，請稍候...";
 
             fetch(GAS_LIVE_URL, {
                 method: 'POST',
@@ -233,9 +293,12 @@
                     action: 'add_live', title: title, youtubeId: ytId, description: document.getElementById('live-desc').value
                 })
             }).then(() => {
-                alert("建立成功！"); btn.disabled = false; btn.innerText = "送出發布";
+                alert("建立成功！"); btn.disabled = false; btn.innerText = "🚀 送出發布";
                 document.getElementById('live-title').value = ''; document.getElementById('live-yt').value = ''; document.getElementById('live-desc').value = '';
                 fetchLiveData(); 
+            }).catch(err => {
+                alert("網路連線錯誤，請稍後再試。");
+                btn.disabled = false; btn.innerText = "🚀 送出發布";
             });
         }
 
@@ -243,7 +306,11 @@
             document.getElementById('video-iframe').src = ''; 
             document.getElementById('detail-section').style.display = 'none';
             document.getElementById('list-section').style.display = 'block';
-            if(currentUserEmail === ADMIN_EMAIL) document.getElementById('admin-panel').style.display = 'block';
+            // 返回列表時，如果是站長，把後台顯示回來
+            if(currentUserEmail.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+                document.getElementById('admin-panel').style.display = 'block';
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     </script>
 </body>
