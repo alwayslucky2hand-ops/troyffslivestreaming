@@ -75,9 +75,12 @@
         .post-meta span { background: var(--input-bg); padding: 4px 12px; border-radius: 6px; border: 1px solid var(--glass-border); color: var(--slate-blue); font-weight: bold;}
         .post-excerpt { color: var(--text-dark); margin-bottom: 25px; }
         
-        .video-wrapper { margin-bottom: 25px; border-radius: var(--radius-soft); overflow: hidden; background: #000; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid var(--glass-border);}
+        .video-wrapper { margin-bottom: 25px; border-radius: var(--radius-soft); overflow: hidden; background: #000; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid var(--glass-border); position: relative;}
         .video-container { position: relative; padding-bottom: 56.25%; height: 0; }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+        
+        /* CTA 區塊樣式 */
+        .cta-container { display: none; padding: 60px 20px; text-align: center; background: #f8fafc; flex-direction: column; justify-content: center; align-items: center; min-height: 45vw; }
         
         .comment-item { background: var(--input-bg); padding: 16px; border-radius: 8px; margin-bottom: 16px; border-left: 4px solid var(--primary-yellow); font-size: 0.95rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05);}
         .system-msg { text-align: center; color: var(--slate-blue); padding: 40px 20px; font-weight: bold; font-size: 1.1rem;}
@@ -99,7 +102,7 @@
     <div class="section" id="login-section">
         <h3 style="margin-top:0;">會員通行證</h3>
         <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px;">
-            為保障會員權益，直播區需驗證身分方可進入。登入後可觀看即時直播、回放並參與討論。
+            為保障會員權益，直播區需驗證身分方可進入。登入後可解鎖專屬限定內容並參與討論。
         </p>
         <p id="login-status" style="color: var(--primary-yellow); font-weight: bold; margin-bottom: 15px;">目前狀態：未登入 (訪客)</p>
         
@@ -171,8 +174,12 @@
         <hr style="border: 0; border-top: 1px solid var(--glass-border); margin: 25px 0;">
         
         <div class="video-wrapper">
-            <div id="video-player" class="video-container">
+            <div id="video-player" class="video-container" style="display:none;">
                 <iframe id="video-iframe" src="" allowfullscreen></iframe>
+            </div>
+            <div id="cta-container" class="cta-container">
+                <h3 id="cta-message" style="color: var(--slate-blue); margin-bottom: 20px; line-height: 1.6; font-size: 1.4rem;">🔒 此為限定內容<br>請確認您的觀看權限</h3>
+                <button id="cta-btn" onclick="scrollToLogin()" style="width: auto; padding: 16px 32px; box-shadow: 0 4px 6px rgba(245, 158, 11, 0.2);">👉 立即登入 / 加入會員</button>
             </div>
         </div>
 
@@ -192,7 +199,7 @@
     </div>
 
     <script>
-        // 🚨 重要：請更新為你重新部署後的 GAS 網址！
+        // 🚨 重要：請更新為你最新部署後的 GAS 網址！
         const GAS_LIVE_URL = 'https://script.google.com/macros/s/AKfycbxs5aALXjw-XgoeD-1ZM2MXCSAZO_ZOfAJpWc8idXHF0AgQt0H0lhAjw6JRQPqCG7eW/exec';
         const ADMIN_EMAIL = 'alwayslucky2hand@gmail.com';
 
@@ -200,7 +207,12 @@
         let allLiveData = []; 
         let currentPost = null; 
 
-        // 控制特定 Email 輸入框的顯示
+        // 🎯 新增：一載入網頁就立刻去抓清單，訪客也能看！
+        window.onload = function() {
+            document.getElementById('list-section').style.display = 'block';
+            fetchLiveData();
+        };
+
         function toggleEmailInput() {
             const vis = document.getElementById('live-visibility').value;
             document.getElementById('live-emails').style.display = (vis === '特定學員') ? 'block' : 'none';
@@ -211,6 +223,11 @@
             el.innerText = text;
             el.className = `inline-msg ${isError ? 'msg-error' : 'msg-success'}`;
             setTimeout(() => el.innerText = '', 4000);
+        }
+
+        function scrollToLogin() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.getElementById('email').focus();
         }
 
         function requestOTP() {
@@ -251,8 +268,13 @@
                     document.getElementById('admin-panel').style.display = 'block';
                 }
                 
-                document.getElementById('list-section').style.display = 'block';
-                fetchLiveData(); 
+                // 🎯 無縫解鎖體驗：如果學員是在影片詳細頁面登入，直接幫他重新判斷權限解鎖，不用跳回列表！
+                if(document.getElementById('detail-section').style.display === 'block' && currentPost) {
+                    enterClass(currentPost.courseId);
+                } else {
+                    document.getElementById('list-section').style.display = 'block';
+                    fetchLiveData(); 
+                }
             });
         }
 
@@ -269,8 +291,10 @@
             document.getElementById('step-1').style.display = 'flex'; 
             document.getElementById('logout-btn-container').style.display = 'none'; 
             document.getElementById('admin-panel').style.display = 'none';
-            document.getElementById('list-section').style.display = 'none';
+            // 登出時重新載入一次資料，並回到列表
             document.getElementById('detail-section').style.display = 'none';
+            document.getElementById('list-section').style.display = 'block';
+            fetchLiveData();
         }
 
         function fetchLiveData() {
@@ -289,15 +313,12 @@
             if (allLiveData.length === 0) return listContainer.innerHTML = '<p class="system-msg">目前沒有任何紀錄喔！</p>';
 
             allLiveData.forEach(post => {
-                // 自動計算入場人數與留言數
                 const viewersCount = post.viewers ? post.viewers.split(',').length : 0;
                 const commentsCount = post.comments ? post.comments.length : 0;
 
-                // 標籤處理
                 let statusBadge = post.status === 'LIVE' ? '<span class="tag-badge tag-live">LIVE 進行中</span>' : '<span class="tag-badge tag-vod">回放</span>';
                 let typeBadge = post.type ? `<span class="tag-badge tag-type">${post.type}</span>` : '';
                 
-                // 處理顯示的權限標籤 (如果是特定 Email，顯示「特定學員」就好)
                 let visLabel = post.visibility;
                 if (visLabel && visLabel !== "所有人" && visLabel !== "會員限定") { visLabel = "特定學員"; }
                 let visBadge = visLabel ? `<span class="tag-badge tag-vis">${visLabel}</span>` : '';
@@ -327,7 +348,9 @@
             currentPost = allLiveData.find(p => p.courseId === courseId);
             if(!currentPost) return;
 
-            fetch(GAS_LIVE_URL, { method: 'POST', body: JSON.stringify({ action: 'record_view', courseId: currentPost.courseId, viewerName: currentUserEmail }) });
+            // 如果沒有登入，將紀錄設為訪客
+            let viewerName = currentUserEmail ? currentUserEmail : '訪客(Guest)';
+            fetch(GAS_LIVE_URL, { method: 'POST', body: JSON.stringify({ action: 'record_view', courseId: currentPost.courseId, viewerName: viewerName }) });
 
             document.getElementById('list-section').style.display = 'none';
             document.getElementById('admin-panel').style.display = 'none'; 
@@ -341,13 +364,56 @@
                 <span>類型: ${currentPost.type || '無'}</span>
             `;
             
+            // 🎯 核心判斷：觀看權限與 CTA 顯示
+            const videoPlayer = document.getElementById('video-player');
+            const ctaContainer = document.getElementById('cta-container');
             const iframe = document.getElementById('video-iframe');
-            if(currentPost.status === 'LIVE' && currentPost.youtubeId) {
-                iframe.src = `https://www.youtube.com/embed/${currentPost.youtubeId}?autoplay=1&rel=0&modestbranding=1`;
-            } else if (currentPost.status === 'VOD' && currentPost.driveId) {
-                iframe.src = `https://drive.google.com/file/d/${currentPost.driveId}/preview`;
+            
+            let canWatch = false;
+            let ctaMessage = "";
+            let showLoginBtn = false;
+
+            if (currentPost.visibility === "所有人") {
+                canWatch = true;
+            } else if (currentPost.visibility === "會員限定") {
+                if (currentUserEmail) {
+                    canWatch = true;
+                } else {
+                    ctaMessage = "🔒 此為「會員限定」直播<br>請先登入以解鎖觀看權限！";
+                    showLoginBtn = true;
+                }
+            } else { // 特定學員 Email
+                if (!currentUserEmail) {
+                    ctaMessage = "🔒 此為「專屬學員」直播<br>請先登入以驗證您的專屬權限！";
+                    showLoginBtn = true;
+                } else {
+                    const allowedEmails = currentPost.visibility.split(',').map(e => e.trim());
+                    if (allowedEmails.includes(currentUserEmail)) {
+                        canWatch = true;
+                    } else {
+                        ctaMessage = "⛔ 您目前登入的帳號無權限觀看此專屬內容。<br>請確認您使用的是正確的 Email 登入。";
+                        showLoginBtn = false;
+                    }
+                }
+            }
+
+            // 根據權限決定顯示影片還是 CTA
+            if (canWatch) {
+                videoPlayer.style.display = 'block';
+                ctaContainer.style.display = 'none';
+                if(currentPost.status === 'LIVE' && currentPost.youtubeId) {
+                    iframe.src = `https://www.youtube.com/embed/${currentPost.youtubeId}?autoplay=1&rel=0&modestbranding=1`;
+                } else if (currentPost.status === 'VOD' && currentPost.driveId) {
+                    iframe.src = `https://drive.google.com/file/d/${currentPost.driveId}/preview`;
+                } else {
+                    iframe.src = '';
+                }
             } else {
+                videoPlayer.style.display = 'none';
                 iframe.src = '';
+                ctaContainer.style.display = 'flex';
+                document.getElementById('cta-message').innerHTML = ctaMessage;
+                document.getElementById('cta-btn').style.display = showLoginBtn ? 'inline-block' : 'none';
             }
 
             document.getElementById('detail-content').innerText = currentPost.description;
@@ -372,6 +438,8 @@
             const content = input.value.trim(); 
             const btn = document.getElementById('btn-submit-comment');
             
+            // 🎯 防呆：必須登入才能留言
+            if (!currentUserEmail) return showMsg('comment-msg', '請先登入後再留言喔！', true);
             if(!content) return showMsg('comment-msg', '請輸入留言內容', true);
             
             btn.disabled = true; btn.innerText = "傳送中...";
@@ -395,7 +463,6 @@
             const meetId = document.getElementById('live-meetId').value.trim();
             const type = document.getElementById('live-type').value;
             
-            // 處理給誰看的邏輯
             let visibility = document.getElementById('live-visibility').value;
             if (visibility === '特定學員') {
                 visibility = document.getElementById('live-emails').value.trim();
@@ -404,7 +471,6 @@
 
             const btn = document.getElementById('btn-submit-live');
             
-            // 🎯 新增：必填欄位檢查
             if(!title) return showMsg('live-msg', '影片標題為必填！', true);
             if(!meetId) return showMsg('live-msg', 'Meet 代碼為必填！', true);
             
@@ -423,10 +489,7 @@
                 })
             }).then(() => {
                 showMsg('live-msg', '直播發布成功！正在為您開啟 Google Meet...');
-                
-                // 🎯 新增：發布成功後，自動開新分頁進入指定的 Google Meet
                 window.open('https://meet.google.com/' + meetId, '_blank');
-
                 btn.disabled = false; btn.innerText = "🚀 發布課程並開啟 Meet";
                 document.getElementById('live-title').value = ''; 
                 document.getElementById('live-yt').value = ''; 
