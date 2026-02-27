@@ -318,7 +318,7 @@
                             <span>💬 ${commentsCount} 則留言</span>
                         </div>
                         <div class="post-excerpt">${post.description || '無內容簡述'}</div>
-                        <button onclick="enterClass('${post.courseId}')" style="margin-bottom:0; width: auto;">進入教室</button>
+                        <button onclick="enterClass('${post.courseId}')" style="margin-bottom:0; width: auto;">入場觀看</button>
                     </div>`;
             });
         }
@@ -408,7 +408,7 @@
             if(!title) return showMsg('live-msg', '影片標題為必填！', true);
             if(!meetId) return showMsg('live-msg', 'Meet 代碼為必填！', true);
             
-            btn.disabled = true; btn.innerText = "發布中，準備進入教室...";
+            btn.disabled = true; btn.innerText = "發布中，準備入場...";
 
             fetch(GAS_LIVE_URL, {
                 method: 'POST',
