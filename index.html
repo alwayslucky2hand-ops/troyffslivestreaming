@@ -294,7 +294,7 @@
                 const commentsCount = post.comments ? post.comments.length : 0;
 
                 // 標籤處理
-                let statusBadge = post.status === 'LIVE' ? '<span class="tag-badge tag-live">LIVE 進行中</span>' : '<span class="tag-badge tag-vod">課程回放</span>';
+                let statusBadge = post.status === 'LIVE' ? '<span class="tag-badge tag-live">LIVE 進行中</span>' : '<span class="tag-badge tag-vod">回放</span>';
                 let typeBadge = post.type ? `<span class="tag-badge tag-type">${post.type}</span>` : '';
                 
                 // 處理顯示的權限標籤 (如果是特定 Email，顯示「特定學員」就好)
