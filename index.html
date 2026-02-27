@@ -124,15 +124,9 @@
     </div>
 
     <div class="section admin-section" id="admin-panel" style="display: none;">
-        <h3 style="margin-top:0; color: var(--danger-color);">極速發布後台 (自動建檔)</h3>
-        
-        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-            <button onclick="window.open('https://meet.google.com/new', '_blank')" style="background: var(--slate-blue); box-shadow: none; flex: 1;">1. 開啟 Google Meet</button>
-            <button onclick="window.open('https://studio.youtube.com', '_blank')" style="background: #EF4444; box-shadow: none; flex: 1;">2. 開啟 YouTube</button>
-        </div>
+        <h3 style="margin-top:0; color: var(--danger-color);">極速發布後台 (填寫後一鍵開啟直播)</h3>
         
         <div style="background: #FFF; padding: 20px; border-radius: 12px; border: 1px solid #FECACA;">
-            <label style="font-weight: bold; display: block; margin-bottom: 10px; color: var(--danger-color);">3. 填寫直播資訊</label>
             
             <input type="text" id="live-title" class="input-box" placeholder="影片標題 (必填)">
             
@@ -153,13 +147,13 @@
             <input type="text" id="live-emails" class="input-box" placeholder="輸入學員 Email，多個請用半形逗號(,)隔開" style="display: none;">
             
             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <input type="text" id="live-meetId" class="input-box" placeholder="Meet代碼 (選填：例如 igo-ttzz-djz)" style="flex: 1; min-width: 150px;">
+                <input type="text" id="live-meetId" class="input-box" placeholder="Meet代碼 (必填：例如 igo-ttzz-djz)" style="flex: 1; min-width: 150px;">
                 <input type="text" id="live-yt" class="input-box" placeholder="YouTube_ID (選填：例如 dQw4w9WgXcQ)" style="flex: 1; min-width: 150px;">
             </div>
 
             <textarea id="live-desc" class="input-box" placeholder="課程簡述 (選填)" rows="2"></textarea>
             
-            <button onclick="submitLive()" id="btn-submit-live" class="btn-danger" style="margin-bottom: 0;">送出發布</button>
+            <button onclick="submitLive()" id="btn-submit-live" class="btn-danger" style="margin-bottom: 0; padding: 16px; font-size: 1.1rem;">🚀 發布課程並開啟 Meet</button>
             <span id="live-msg" class="inline-msg" style="width: 100%; text-align: left;"></span>
         </div>
     </div>
@@ -199,7 +193,7 @@
 
     <script>
         // 🚨 重要：請更新為你重新部署後的 GAS 網址！
-        const GAS_LIVE_URL = 'https://script.google.com/macros/s/AKfycbx44NR0FHZf-0nHaraMWf8-cVchCjTRmMeRYq_GFkrNbVzj8OUCIVPEuHK8tPtesGol/exec';
+        const GAS_LIVE_URL = 'https://script.google.com/macros/s/AKfycbxs5aALXjw-XgoeD-1ZM2MXCSAZO_ZOfAJpWc8idXHF0AgQt0H0lhAjw6JRQPqCG7eW/exec';
         const ADMIN_EMAIL = 'alwayslucky2hand@gmail.com';
 
         let currentUserEmail = ''; 
@@ -410,9 +404,11 @@
 
             const btn = document.getElementById('btn-submit-live');
             
+            // 🎯 新增：必填欄位檢查
             if(!title) return showMsg('live-msg', '影片標題為必填！', true);
+            if(!meetId) return showMsg('live-msg', 'Meet 代碼為必填！', true);
             
-            btn.disabled = true; btn.innerText = "建立中，請稍候...";
+            btn.disabled = true; btn.innerText = "發布中，準備進入教室...";
 
             fetch(GAS_LIVE_URL, {
                 method: 'POST',
@@ -426,8 +422,12 @@
                     description: document.getElementById('live-desc').value
                 })
             }).then(() => {
-                showMsg('live-msg', '直播發布成功！');
-                btn.disabled = false; btn.innerText = "送出發布";
+                showMsg('live-msg', '直播發布成功！正在為您開啟 Google Meet...');
+                
+                // 🎯 新增：發布成功後，自動開新分頁進入指定的 Google Meet
+                window.open('https://meet.google.com/' + meetId, '_blank');
+
+                btn.disabled = false; btn.innerText = "🚀 發布課程並開啟 Meet";
                 document.getElementById('live-title').value = ''; 
                 document.getElementById('live-yt').value = ''; 
                 document.getElementById('live-meetId').value = ''; 
@@ -436,7 +436,7 @@
                 fetchLiveData(); 
             }).catch(err => {
                 showMsg('live-msg', '網路連線錯誤，請稍後再試。', true);
-                btn.disabled = false; btn.innerText = "送出發布";
+                btn.disabled = false; btn.innerText = "🚀 發布課程並開啟 Meet";
             });
         }
 
