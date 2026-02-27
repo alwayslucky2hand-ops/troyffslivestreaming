@@ -43,6 +43,20 @@
         }
         .input-box:focus, textarea:focus, select:focus { outline: none; border-color: var(--primary-yellow); background: var(--bg-pure); box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2); }
         
+        /* 搜尋與篩選區塊專用樣式 */
+        .search-box { 
+            width: 100%; padding: 14px 18px; border: 1px solid var(--glass-border); 
+            border-radius: 8px; font-size: 1rem; color: var(--text-dark); 
+            background: var(--input-bg); transition: all 0.3s ease; font-family: inherit; margin-bottom: 24px; 
+        }
+        .search-box:focus { outline: none; border-color: var(--primary-yellow); background: var(--bg-pure); box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2); }
+        
+        .filter-section { background: var(--panel-bg); margin-bottom: 32px; padding: 24px; border-radius: var(--radius-soft); border: 1px solid var(--glass-border); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); }
+        .filter-title { margin-bottom: 12px; font-weight: bold; color: var(--slate-blue); font-size: 0.9em; letter-spacing: 0.05em; }
+        .category-nav { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: nowrap; overflow-x: auto; }
+        .cat-btn { background: var(--input-bg); color: var(--text-muted); padding: 8px 18px; border-radius: 30px; border: 1px solid var(--glass-border); font-size: 0.95em; font-weight: bold; cursor: pointer; transition: all 0.2s; white-space: nowrap; margin-bottom: 0; box-shadow: none; width: auto; }
+        .cat-btn.active, .cat-btn:hover { background: var(--primary-yellow); color: #ffffff; border-color: var(--primary-yellow); transform: none; }
+
         button { 
             background: var(--primary-yellow); color: #ffffff; border: none; 
             padding: 14px 28px; border-radius: 8px; cursor: pointer; font-weight: bold; 
@@ -162,6 +176,20 @@
     </div>
 
     <div id="list-section" style="display: none;">
+        
+        <input type="text" id="searchInput" class="search-box" placeholder="輸入關鍵字搜尋課程標題或內容..." oninput="filterPosts()">
+        
+        <div class="filter-section" id="filterSection">
+            <div class="filter-title">直播類型</div>
+            <div class="category-nav" id="type-container"></div>
+            
+            <div class="filter-title" style="margin-top: 10px;">發佈日期</div>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <input type="date" id="datePicker" class="input-box" style="width: auto; margin: 0;" onchange="handleDateChange()">
+                <button onclick="clearDateFilter()" class="cat-btn" style="background: var(--bg-pure);">清除</button>
+            </div>
+        </div>
+
         <div id="loading-list" class="system-msg">正在為您準備專屬直播清單...</div>
         <div id="post-list"></div>
     </div>
@@ -207,11 +235,37 @@
         let allLiveData = []; 
         let currentPost = null; 
 
-        // 🎯 新增：一載入網頁就立刻去抓清單，訪客也能看！
+        // 🎯 搜尋與篩選變數
+        let currentSearchQuery = '';
+        let currentType = '全部';
+        let currentDate = '';
+
+        // 一載入網頁就立刻去抓清單
         window.onload = function() {
             document.getElementById('list-section').style.display = 'block';
+            renderTypeFilter(); // 渲染篩選器按鈕
             fetchLiveData();
         };
+
+        // 🎯 渲染類別篩選器按鈕
+        function renderTypeFilter() {
+            const container = document.getElementById('type-container'); 
+            container.innerHTML = '';
+            ['全部', '互動直播', '課程直播', '實戰直播'].forEach(opt => {
+                const btn = document.createElement('button'); 
+                btn.className = opt === currentType ? 'cat-btn active' : 'cat-btn';
+                btn.innerText = opt; 
+                btn.onclick = () => { currentType = opt; renderTypeFilter(); renderList(); };
+                container.appendChild(btn);
+            });
+        }
+
+        // 🎯 處理日期變更與清除
+        function handleDateChange() { currentDate = document.getElementById('datePicker').value; renderList(); }
+        function clearDateFilter() { document.getElementById('datePicker').value = ''; currentDate = ''; renderList(); }
+        
+        // 🎯 處理關鍵字搜尋
+        function filterPosts() { currentSearchQuery = document.getElementById('searchInput').value.toLowerCase().trim(); renderList(); }
 
         function toggleEmailInput() {
             const vis = document.getElementById('live-visibility').value;
@@ -268,7 +322,7 @@
                     document.getElementById('admin-panel').style.display = 'block';
                 }
                 
-                // 🎯 無縫解鎖體驗：如果學員是在影片詳細頁面登入，直接幫他重新判斷權限解鎖，不用跳回列表！
+                // 無縫解鎖體驗
                 if(document.getElementById('detail-section').style.display === 'block' && currentPost) {
                     enterClass(currentPost.courseId);
                 } else {
@@ -291,7 +345,6 @@
             document.getElementById('step-1').style.display = 'flex'; 
             document.getElementById('logout-btn-container').style.display = 'none'; 
             document.getElementById('admin-panel').style.display = 'none';
-            // 登出時重新載入一次資料，並回到列表
             document.getElementById('detail-section').style.display = 'none';
             document.getElementById('list-section').style.display = 'block';
             fetchLiveData();
@@ -310,9 +363,37 @@
         function renderList() {
             const listContainer = document.getElementById('post-list');
             listContainer.innerHTML = ''; 
-            if (allLiveData.length === 0) return listContainer.innerHTML = '<p class="system-msg">目前沒有任何紀錄喔！</p>';
 
-            allLiveData.forEach(post => {
+            // 🎯 新增：篩選邏輯
+            let filtered = allLiveData;
+            
+            // 1. 關鍵字搜尋 (比對標題、內容、類型、課程編號)
+            if (currentSearchQuery) {
+                filtered = filtered.filter(p => 
+                    (p.title && p.title.toLowerCase().includes(currentSearchQuery)) || 
+                    (p.description && p.description.toLowerCase().includes(currentSearchQuery)) || 
+                    (p.type && p.type.toLowerCase().includes(currentSearchQuery)) ||
+                    (p.courseId && p.courseId.toLowerCase().includes(currentSearchQuery))
+                );
+            }
+            
+            // 2. 類別篩選
+            if (currentType !== '全部') {
+                filtered = filtered.filter(p => p.type === currentType);
+            }
+            
+            // 3. 日期篩選
+            if (currentDate) {
+                filtered = filtered.filter(p => p.date && p.date.includes(currentDate));
+            }
+
+            // 若篩選後無資料
+            if (filtered.length === 0) {
+                return listContainer.innerHTML = '<p class="system-msg">目前沒有符合條件的紀錄喔！</p>';
+            }
+
+            // 渲染過濾後的清單
+            filtered.forEach(post => {
                 const viewersCount = post.viewers ? post.viewers.split(',').length : 0;
                 const commentsCount = post.comments ? post.comments.length : 0;
 
@@ -348,7 +429,6 @@
             currentPost = allLiveData.find(p => p.courseId === courseId);
             if(!currentPost) return;
 
-            // 如果沒有登入，將紀錄設為訪客
             let viewerName = currentUserEmail ? currentUserEmail : '訪客(Guest)';
             fetch(GAS_LIVE_URL, { method: 'POST', body: JSON.stringify({ action: 'record_view', courseId: currentPost.courseId, viewerName: viewerName }) });
 
@@ -364,7 +444,6 @@
                 <span>類型: ${currentPost.type || '無'}</span>
             `;
             
-            // 🎯 核心判斷：觀看權限與 CTA 顯示
             const videoPlayer = document.getElementById('video-player');
             const ctaContainer = document.getElementById('cta-container');
             const iframe = document.getElementById('video-iframe');
@@ -382,7 +461,7 @@
                     ctaMessage = "🔒 此為「會員限定」直播<br>請先登入以解鎖觀看權限！";
                     showLoginBtn = true;
                 }
-            } else { // 特定學員 Email
+            } else { 
                 if (!currentUserEmail) {
                     ctaMessage = "🔒 此為「專屬學員」直播<br>請先登入以驗證您的專屬權限！";
                     showLoginBtn = true;
@@ -397,7 +476,6 @@
                 }
             }
 
-            // 根據權限決定顯示影片還是 CTA
             if (canWatch) {
                 videoPlayer.style.display = 'block';
                 ctaContainer.style.display = 'none';
@@ -438,7 +516,6 @@
             const content = input.value.trim(); 
             const btn = document.getElementById('btn-submit-comment');
             
-            // 🎯 防呆：必須登入才能留言
             if (!currentUserEmail) return showMsg('comment-msg', '請先登入後再留言喔！', true);
             if(!content) return showMsg('comment-msg', '請輸入留言內容', true);
             
