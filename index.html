@@ -6,7 +6,6 @@
     <title>特洛伊AI專屬直播</title>
     <style>
         :root {
-            /* 沿用課程區的高質感色系 */
             --primary-yellow: #F59E0B; 
             --primary-hover: #D97706;      
             --slate-blue: #1F2937;     
@@ -33,21 +32,17 @@
         h1 { font-size: 1.8rem; text-align: center; margin-top: 10px; margin-bottom: 30px;}
         
         .section { background: var(--panel-bg); padding: 40px; margin-bottom: 25px; border-radius: var(--radius-soft); border: 1px solid var(--glass-border); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); }
-        
-        /* 管理員專區特效 */
         .admin-section { border-left: 5px solid var(--danger-color); background: #fef2f2; animation: fadeIn 0.5s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* 輸入框樣式 */
-        .input-box, textarea { 
+        .input-box, textarea, select { 
             padding: 14px 18px; border: 1px solid var(--glass-border); border-radius: 8px; 
             font-size: 16px !important; width: 100%; margin-bottom: 10px; 
             background: var(--input-bg); color: var(--text-dark); font-family: inherit;
-            appearance: none; transition: all 0.3s ease;
+            transition: all 0.3s ease;
         }
-        .input-box:focus, textarea:focus { outline: none; border-color: var(--primary-yellow); background: var(--bg-pure); box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2); }
+        .input-box:focus, textarea:focus, select:focus { outline: none; border-color: var(--primary-yellow); background: var(--bg-pure); box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2); }
         
-        /* 按鈕優化 */
         button { 
             background: var(--primary-yellow); color: #ffffff; border: none; 
             padding: 14px 28px; border-radius: 8px; cursor: pointer; font-weight: bold; 
@@ -64,21 +59,22 @@
         .msg-error { color: var(--danger-color); }
         .msg-success { color: var(--accent-green); }
         
-        /* 卡片佈局優化 */
         .post-card { background: var(--panel-bg); border: 1px solid var(--glass-border); padding: 35px; margin-bottom: 25px; border-radius: var(--radius-soft); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); }
         .post-title-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; gap: 10px; }
         .post-title { font-size: 1.5em; margin: 0; font-weight: bold; color: var(--text-dark); }
         
-        .tag-badge { padding: 4px 12px; border-radius: 6px; font-size: 0.85em; font-weight: bold; color: white; display: inline-block; white-space: nowrap; }
+        .tags-container { display: flex; gap: 8px; flex-wrap: wrap; }
+        .tag-badge { padding: 4px 10px; border-radius: 6px; font-size: 0.8em; font-weight: bold; color: white; display: inline-block; white-space: nowrap; }
         .tag-live { background: #EF4444; animation: pulse 2s infinite; }
         .tag-vod { background: var(--slate-blue); }
+        .tag-type { background: #8B5CF6; } 
+        .tag-vis { background: #10B981; }  
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.8; } 100% { opacity: 1; } }
 
         .post-meta { font-size: 0.9em; color: var(--text-muted); margin-bottom: 20px; display: flex; gap: 15px; flex-wrap: wrap; }
         .post-meta span { background: var(--input-bg); padding: 4px 12px; border-radius: 6px; border: 1px solid var(--glass-border); color: var(--slate-blue); font-weight: bold;}
         .post-excerpt { color: var(--text-dark); margin-bottom: 25px; }
         
-        /* 播放器 */
         .video-wrapper { margin-bottom: 25px; border-radius: var(--radius-soft); overflow: hidden; background: #000; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid var(--glass-border);}
         .video-container { position: relative; padding-bottom: 56.25%; height: 0; }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
@@ -89,13 +85,10 @@
         @media (max-width: 600px) { 
             body { padding: 20px 15px; } 
             .section, .post-card { padding: 25px 20px; } 
-            
             #step-1, #step-2 div { flex-direction: column; align-items: stretch; gap: 5px; }
             #email, #otp-code { max-width: 100% !important; margin-bottom: 5px !important;}
             #login-section button { width: 100%; min-width: auto !important; margin-bottom: 5px !important; }
-            
             .post-title-row { flex-direction: column; }
-            .tag-badge { align-self: flex-start; }
         }
     </style>
 </head>
@@ -132,15 +125,40 @@
 
     <div class="section admin-section" id="admin-panel" style="display: none;">
         <h3 style="margin-top:0; color: var(--danger-color);">極速發布後台 (自動建檔)</h3>
-        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">歡迎站長！日期、時間、課程編號將由系統自動產生。</p>
         
-        <button onclick="window.open('https://meet.google.com/new', '_blank')" style="background: var(--slate-blue); box-shadow: none;">1. 點此開啟 Google Meet (並複製 YouTube ID)</button>
+        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+            <button onclick="window.open('https://meet.google.com/new', '_blank')" style="background: var(--slate-blue); box-shadow: none; flex: 1;">1. 開啟 Google Meet</button>
+            <button onclick="window.open('https://studio.youtube.com', '_blank')" style="background: #EF4444; box-shadow: none; flex: 1;">2. 開啟 YouTube</button>
+        </div>
         
-        <div style="background: #FFF; padding: 20px; border-radius: 12px; margin-top: 15px; border: 1px solid #FECACA;">
-            <label style="font-weight: bold; display: block; margin-bottom: 10px; color: var(--danger-color);">2. 貼上資訊並發布</label>
-            <input type="text" id="live-title" class="input-box" placeholder="請輸入課程標題 (必填)">
-            <input type="text" id="live-yt" class="input-box" placeholder="貼上 YouTube_ID (必填：例如 dQw4w9WgXcQ)">
-            <textarea id="live-desc" class="input-box" placeholder="課程簡述 (選填)" rows="3"></textarea>
+        <div style="background: #FFF; padding: 20px; border-radius: 12px; border: 1px solid #FECACA;">
+            <label style="font-weight: bold; display: block; margin-bottom: 10px; color: var(--danger-color);">3. 填寫直播資訊</label>
+            
+            <input type="text" id="live-title" class="input-box" placeholder="影片標題 (必填)">
+            
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <select id="live-type" class="input-box" style="flex: 1; min-width: 150px;">
+                    <option value="互動直播">互動直播</option>
+                    <option value="課程直播">課程直播</option>
+                    <option value="實戰直播">實戰直播</option>
+                </select>
+                
+                <select id="live-visibility" class="input-box" style="flex: 1; min-width: 150px;" onchange="toggleEmailInput()">
+                    <option value="所有人">所有人</option>
+                    <option value="會員限定">會員限定</option>
+                    <option value="特定學員">特定學員 (請填寫Email)</option>
+                </select>
+            </div>
+            
+            <input type="text" id="live-emails" class="input-box" placeholder="輸入學員 Email，多個請用半形逗號(,)隔開" style="display: none;">
+            
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <input type="text" id="live-meetId" class="input-box" placeholder="Meet代碼 (選填：例如 igo-ttzz-djz)" style="flex: 1; min-width: 150px;">
+                <input type="text" id="live-yt" class="input-box" placeholder="YouTube_ID (選填：例如 dQw4w9WgXcQ)" style="flex: 1; min-width: 150px;">
+            </div>
+
+            <textarea id="live-desc" class="input-box" placeholder="課程簡述 (選填)" rows="2"></textarea>
+            
             <button onclick="submitLive()" id="btn-submit-live" class="btn-danger" style="margin-bottom: 0;">送出發布</button>
             <span id="live-msg" class="inline-msg" style="width: 100%; text-align: left;"></span>
         </div>
@@ -180,15 +198,20 @@
     </div>
 
     <script>
-        // 記得換上你最新的 GAS 部署網址！
-        const GAS_LIVE_URL = 'https://script.google.com/macros/s/AKfycbxBra-xYPly-vYUa4CHa_pTMcm_RHgUTSf-_Eq36uguL2_EoKMAYJ_TQtR_zPesc-B9/exec';
+        // 🚨 重要：請更新為你重新部署後的 GAS 網址！
+        const GAS_LIVE_URL = 'https://script.google.com/macros/s/AKfycbx44NR0FHZf-0nHaraMWf8-cVchCjTRmMeRYq_GFkrNbVzj8OUCIVPEuHK8tPtesGol/exec';
         const ADMIN_EMAIL = 'alwayslucky2hand@gmail.com';
 
         let currentUserEmail = ''; 
         let allLiveData = []; 
         let currentPost = null; 
 
-        // --- 登入狀態與驗證邏輯 ---
+        // 控制特定 Email 輸入框的顯示
+        function toggleEmailInput() {
+            const vis = document.getElementById('live-visibility').value;
+            document.getElementById('live-emails').style.display = (vis === '特定學員') ? 'block' : 'none';
+        }
+
         function showMsg(id, text, isError = false) {
             const el = document.getElementById(id);
             el.innerText = text;
@@ -199,15 +222,11 @@
         function requestOTP() {
             const email = document.getElementById('email').value.trim();
             if (!email) return showMsg('otp-msg', '請先輸入 Email', true);
-            
             document.getElementById('btn-otp').innerText = "寄送中...";
             fetch(GAS_LIVE_URL, { method: 'POST', body: JSON.stringify({ action: 'requestOTP', email: email }) })
             .then(res => res.json()).then(data => {
                 document.getElementById('btn-otp').innerText = "寄送驗證碼";
-                if (data.status === "error") {
-                    // 替換 alert 為畫面提示
-                    return showMsg('otp-msg', data.message, true);
-                }
+                if (data.status === "error") return showMsg('otp-msg', data.message, true);
                 document.getElementById('step-1').style.display = 'none';
                 document.getElementById('step-2').style.display = 'block';
                 showMsg('login-msg', '驗證碼已寄出，請去信箱查看');
@@ -226,19 +245,14 @@
             fetch(GAS_LIVE_URL, { method: 'POST', body: JSON.stringify({ action: 'verifyOTP', email: email, otp: otp }) })
             .then(res => res.json()).then(data => {
                 document.getElementById('btn-login').innerText = "登入通行";
-                if (data.status === "error") {
-                    // 替換 alert 為畫面提示
-                    return showMsg('login-msg', data.message, true);
-                }
+                if (data.status === "error") return showMsg('login-msg', data.message, true);
                 
-                // 登入成功，設定使用者並開放內容
                 currentUserEmail = email;
                 document.getElementById('login-status').innerText = `已登入學員：${email}`;
                 document.getElementById('step-1').style.display = 'none';
                 document.getElementById('step-2').style.display = 'none';
                 document.getElementById('logout-btn-container').style.display = 'block';
                 
-                // 關鍵：確認是否為站長，顯示發布後台
                 if(currentUserEmail.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
                     document.getElementById('admin-panel').style.display = 'block';
                 }
@@ -260,14 +274,11 @@
             document.getElementById('login-status').innerText = '目前狀態：未登入 (訪客)'; 
             document.getElementById('step-1').style.display = 'flex'; 
             document.getElementById('logout-btn-container').style.display = 'none'; 
-            
-            // 登出時隱藏所有資料區塊
             document.getElementById('admin-panel').style.display = 'none';
             document.getElementById('list-section').style.display = 'none';
             document.getElementById('detail-section').style.display = 'none';
         }
 
-        // --- 獲取與渲染直播列表 ---
         function fetchLiveData() {
             fetch(GAS_LIVE_URL).then(res => res.json()).then(data => {
                 allLiveData = data.reverse(); 
@@ -284,35 +295,57 @@
             if (allLiveData.length === 0) return listContainer.innerHTML = '<p class="system-msg">目前沒有任何紀錄喔！</p>';
 
             allLiveData.forEach(post => {
-                let badge = post.status === 'LIVE' ? '<span class="tag-badge tag-live">LIVE 進行中</span>' : '<span class="tag-badge tag-vod">課程回放</span>';
+                // 自動計算入場人數與留言數
+                const viewersCount = post.viewers ? post.viewers.split(',').length : 0;
+                const commentsCount = post.comments ? post.comments.length : 0;
+
+                // 標籤處理
+                let statusBadge = post.status === 'LIVE' ? '<span class="tag-badge tag-live">LIVE 進行中</span>' : '<span class="tag-badge tag-vod">課程回放</span>';
+                let typeBadge = post.type ? `<span class="tag-badge tag-type">${post.type}</span>` : '';
+                
+                // 處理顯示的權限標籤 (如果是特定 Email，顯示「特定學員」就好)
+                let visLabel = post.visibility;
+                if (visLabel && visLabel !== "所有人" && visLabel !== "會員限定") { visLabel = "特定學員"; }
+                let visBadge = visLabel ? `<span class="tag-badge tag-vis">${visLabel}</span>` : '';
+
                 listContainer.innerHTML += `
                     <div class="post-card">
                         <div class="post-title-row">
                             <h3 class="post-title">${post.title}</h3>
-                            <div>${badge}</div>
+                            <div class="tags-container">
+                                ${statusBadge} ${typeBadge} ${visBadge}
+                            </div>
                         </div>
-                        <div class="post-meta"><span>ID：${post.courseId}</span><span>開課日期：${post.date}</span></div>
+                        <div class="post-meta">
+                            <span>課程編號：${post.courseId}</span>
+                            <span>發佈人：${post.publisher}</span>
+                            <span>發佈日期：${post.date}</span>
+                            <span>👥 ${viewersCount} 人入場</span>
+                            <span>💬 ${commentsCount} 則留言</span>
+                        </div>
                         <div class="post-excerpt">${post.description || '無內容簡述'}</div>
                         <button onclick="enterClass('${post.courseId}')" style="margin-bottom:0; width: auto;">進入教室</button>
                     </div>`;
             });
         }
 
-        // --- 進入教室與細節操作 ---
         function enterClass(courseId) {
             currentPost = allLiveData.find(p => p.courseId === courseId);
             if(!currentPost) return;
 
-            // 背景寫入觀看紀錄
             fetch(GAS_LIVE_URL, { method: 'POST', body: JSON.stringify({ action: 'record_view', courseId: currentPost.courseId, viewerName: currentUserEmail }) });
 
             document.getElementById('list-section').style.display = 'none';
-            document.getElementById('admin-panel').style.display = 'none'; // 進入教室時先隱藏後台讓版面乾淨
+            document.getElementById('admin-panel').style.display = 'none'; 
             document.getElementById('detail-section').style.display = 'block';
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
             document.getElementById('detail-title').innerText = currentPost.title;
-            document.getElementById('detail-meta').innerHTML = `<span>編號: ${currentPost.courseId}</span> <span>${currentPost.date} ${currentPost.time}</span>`;
+            document.getElementById('detail-meta').innerHTML = `
+                <span>課程編號: ${currentPost.courseId}</span> 
+                <span>發佈日期: ${currentPost.date}</span>
+                <span>類型: ${currentPost.type || '無'}</span>
+            `;
             
             const iframe = document.getElementById('video-iframe');
             if(currentPost.status === 'LIVE' && currentPost.youtubeId) {
@@ -345,7 +378,6 @@
             const content = input.value.trim(); 
             const btn = document.getElementById('btn-submit-comment');
             
-            // 替換 alert 為畫面提示
             if(!content) return showMsg('comment-msg', '請輸入留言內容', true);
             
             btn.disabled = true; btn.innerText = "傳送中...";
@@ -366,22 +398,41 @@
         function submitLive() {
             const title = document.getElementById('live-title').value.trim();
             const ytId = document.getElementById('live-yt').value.trim();
+            const meetId = document.getElementById('live-meetId').value.trim();
+            const type = document.getElementById('live-type').value;
+            
+            // 處理給誰看的邏輯
+            let visibility = document.getElementById('live-visibility').value;
+            if (visibility === '特定學員') {
+                visibility = document.getElementById('live-emails').value.trim();
+                if(!visibility) return showMsg('live-msg', '請填寫特定學員的 Email', true);
+            }
+
             const btn = document.getElementById('btn-submit-live');
             
-            // 替換 alert 為畫面提示
-            if(!title || !ytId) return showMsg('live-msg', '標題與 YouTube ID 為必填！', true);
+            if(!title) return showMsg('live-msg', '影片標題為必填！', true);
             
             btn.disabled = true; btn.innerText = "建立中，請稍候...";
 
             fetch(GAS_LIVE_URL, {
                 method: 'POST',
                 body: JSON.stringify({
-                    action: 'add_live', title: title, youtubeId: ytId, description: document.getElementById('live-desc').value
+                    action: 'add_live', 
+                    title: title, 
+                    type: type,
+                    visibility: visibility,
+                    meetId: meetId,
+                    youtubeId: ytId, 
+                    description: document.getElementById('live-desc').value
                 })
             }).then(() => {
                 showMsg('live-msg', '直播發布成功！');
                 btn.disabled = false; btn.innerText = "送出發布";
-                document.getElementById('live-title').value = ''; document.getElementById('live-yt').value = ''; document.getElementById('live-desc').value = '';
+                document.getElementById('live-title').value = ''; 
+                document.getElementById('live-yt').value = ''; 
+                document.getElementById('live-meetId').value = ''; 
+                document.getElementById('live-desc').value = '';
+                document.getElementById('live-emails').value = '';
                 fetchLiveData(); 
             }).catch(err => {
                 showMsg('live-msg', '網路連線錯誤，請稍後再試。', true);
@@ -393,7 +444,6 @@
             document.getElementById('video-iframe').src = ''; 
             document.getElementById('detail-section').style.display = 'none';
             document.getElementById('list-section').style.display = 'block';
-            // 返回列表時，如果是站長，把後台顯示回來
             if(currentUserEmail.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
                 document.getElementById('admin-panel').style.display = 'block';
             }
