@@ -10,58 +10,82 @@
             --primary-hover: #D97706;      
             --slate-blue: #1F2937;     
             --accent-green: #10B981;        
-            --bg-pure: #FFFFFF;          
+            --bg-pure: #F3F4F6; /* 背景改為稍微帶灰，讓卡片更突出 */          
             --panel-bg: #FFFFFF;       
             --input-bg: #F8FAFC;       
             --text-dark: #111827;          
             --text-muted: #6B7280;     
-            --glass-border: #CBD5E1;       
-            --radius-soft: 12px; 
+            --glass-border: #E2E8F0;       
+            --radius-soft: 16px; /* 增加圓角讓視覺更現代 */
             --danger-color: #EF4444;   
         }
         
         *, *::before, *::after { box-sizing: border-box; }
+        
         body { 
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Microsoft JhengHei', sans-serif; 
-            line-height: 1.8; max-width: 800px; margin: 0 auto; padding: 40px 20px; 
-            background: var(--bg-pure); color: var(--text-dark); min-height: 100vh; 
+            line-height: 1.6; 
+            /* 關鍵：限制最大寬度，並在電腦版置中，呈現 App 視覺 */
+            max-width: 500px; 
+            margin: 0 auto; 
+            padding: 20px 15px; 
+            background: var(--bg-pure); 
+            color: var(--text-dark); 
+            min-height: 100vh; 
             -webkit-font-smoothing: antialiased; 
         }
         
-        h1, h2, h3 { color: var(--slate-blue); letter-spacing: 0.05em; font-weight: bold; margin-bottom: 24px; }
-        h1 { font-size: 1.8rem; text-align: center; margin-top: 10px; margin-bottom: 30px;}
+        h1, h2, h3 { color: var(--slate-blue); letter-spacing: 0.05em; font-weight: bold; margin-bottom: 16px; }
+        h1 { font-size: 1.6rem; text-align: center; margin-top: 10px; margin-bottom: 24px;}
         
-        .section { background: var(--panel-bg); padding: 40px; margin-bottom: 25px; border-radius: var(--radius-soft); border: 1px solid var(--glass-border); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); }
-        .admin-section { border-left: 5px solid var(--danger-color); background: #fef2f2; animation: fadeIn 0.5s ease; }
+        /* 區塊卡片設計 */
+        .section { background: var(--panel-bg); padding: 24px 20px; margin-bottom: 20px; border-radius: var(--radius-soft); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03); }
+        .admin-section { border: 2px solid var(--danger-color); background: #fef2f2; animation: fadeIn 0.5s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         
-        .input-box, textarea, select { 
-            padding: 14px 18px; border: 1px solid var(--glass-border); border-radius: 8px; 
-            font-size: 16px !important; width: 100%; margin-bottom: 10px; 
-            background: var(--input-bg); color: var(--text-dark); font-family: inherit;
+        /* 統一垂直堆疊的表單群組 */
+        .form-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; width: 100%; }
+        
+        .input-box, textarea, select, .search-box { 
+            width: 100%;
+            padding: 14px 16px; 
+            border: 1px solid var(--glass-border); 
+            border-radius: 10px; 
+            font-size: 16px !important; /* 避免 iOS 自動縮放 */
+            background: var(--input-bg); 
+            color: var(--text-dark); 
+            font-family: inherit;
             transition: all 0.3s ease;
+            margin-bottom: 0; /* 交由 gap 控制 */
         }
-        .input-box:focus, textarea:focus, select:focus { outline: none; border-color: var(--primary-yellow); background: var(--bg-pure); box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2); }
+        .input-box:focus, textarea:focus, select:focus, .search-box:focus { outline: none; border-color: var(--primary-yellow); background: var(--panel-bg); box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2); }
         
-        /* 搜尋與篩選區塊專用樣式 */
-        .search-box { 
-            width: 100%; padding: 14px 18px; border: 1px solid var(--glass-border); 
-            border-radius: 8px; font-size: 1rem; color: var(--text-dark); 
-            background: var(--input-bg); transition: all 0.3s ease; font-family: inherit; margin-bottom: 24px; 
-        }
-        .search-box:focus { outline: none; border-color: var(--primary-yellow); background: var(--bg-pure); box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2); }
+        /* 篩選區塊專用樣式 */
+        .filter-section { background: var(--panel-bg); margin-bottom: 24px; padding: 20px; border-radius: var(--radius-soft); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03); }
+        .filter-title { margin-bottom: 10px; font-weight: bold; color: var(--slate-blue); font-size: 0.9em; letter-spacing: 0.05em; }
+        .category-nav { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 5px; }
+        .category-nav::-webkit-scrollbar { display: none; } /* 隱藏手機上的滾動條 */
         
-        .filter-section { background: var(--panel-bg); margin-bottom: 32px; padding: 24px; border-radius: var(--radius-soft); border: 1px solid var(--glass-border); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); }
-        .filter-title { margin-bottom: 12px; font-weight: bold; color: var(--slate-blue); font-size: 0.9em; letter-spacing: 0.05em; }
-        .category-nav { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: nowrap; overflow-x: auto; }
-        .cat-btn { background: var(--input-bg); color: var(--text-muted); padding: 8px 18px; border-radius: 30px; border: 1px solid var(--glass-border); font-size: 0.95em; font-weight: bold; cursor: pointer; transition: all 0.2s; white-space: nowrap; margin-bottom: 0; box-shadow: none; width: auto; }
-        .cat-btn.active, .cat-btn:hover { background: var(--primary-yellow); color: #ffffff; border-color: var(--primary-yellow); transform: none; }
+        .cat-btn { background: var(--input-bg); color: var(--text-muted); padding: 10px 18px; border-radius: 30px; border: 1px solid var(--glass-border); font-size: 0.9em; font-weight: bold; cursor: pointer; transition: all 0.2s; white-space: nowrap; flex-shrink: 0; }
+        .cat-btn.active, .cat-btn:hover { background: var(--primary-yellow); color: #ffffff; border-color: var(--primary-yellow); }
 
+        /* 按鈕設計：加高點擊區，100% 寬度 */
         button { 
-            background: var(--primary-yellow); color: #ffffff; border: none; 
-            padding: 14px 28px; border-radius: 8px; cursor: pointer; font-weight: bold; 
-            font-size: 1rem; transition: background 0.2s; width: 100%; margin-bottom: 10px; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; justify-content: center; align-items: center; gap: 8px;
+            width: 100%;
+            background: var(--primary-yellow); 
+            color: #ffffff; 
+            border: none; 
+            padding: 16px 20px; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            font-size: 1rem; 
+            transition: background 0.2s; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 8px;
         }
         button:hover { background: var(--primary-hover); } 
         button:disabled { background: #E5E7EB; color: var(--text-muted); cursor: not-allowed; box-shadow: none; }
@@ -69,13 +93,14 @@
         .btn-danger:hover { background: #DC2626; }
         .btn-outline { background: var(--input-bg); color: var(--slate-blue); border: 1px solid var(--glass-border); box-shadow: none; }
         
-        .inline-msg { font-size: 0.9em; font-weight: bold; display: block; margin-top: 5px; min-height: 24px; }
+        .inline-msg { font-size: 0.9em; font-weight: bold; display: block; margin-top: 4px; min-height: 20px; text-align: center; }
         .msg-error { color: var(--danger-color); }
         .msg-success { color: var(--accent-green); }
         
-        .post-card { background: var(--panel-bg); border: 1px solid var(--glass-border); padding: 35px; margin-bottom: 25px; border-radius: var(--radius-soft); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); }
-        .post-title-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; gap: 10px; }
-        .post-title { font-size: 1.5em; margin: 0; font-weight: bold; color: var(--text-dark); }
+        /* 卡片設計 */
+        .post-card { background: var(--panel-bg); padding: 24px 20px; margin-bottom: 20px; border-radius: var(--radius-soft); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03); }
+        .post-title-row { display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
+        .post-title { font-size: 1.3em; margin: 0; font-weight: bold; color: var(--text-dark); line-height: 1.4; }
         
         .tags-container { display: flex; gap: 8px; flex-wrap: wrap; }
         .tag-badge { padding: 4px 10px; border-radius: 6px; font-size: 0.8em; font-weight: bold; color: white; display: inline-block; white-space: nowrap; }
@@ -85,28 +110,21 @@
         .tag-vis { background: #10B981; }  
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.8; } 100% { opacity: 1; } }
 
-        .post-meta { font-size: 0.9em; color: var(--text-muted); margin-bottom: 20px; display: flex; gap: 15px; flex-wrap: wrap; }
-        .post-meta span { background: var(--input-bg); padding: 4px 12px; border-radius: 6px; border: 1px solid var(--glass-border); color: var(--slate-blue); font-weight: bold;}
-        .post-excerpt { color: var(--text-dark); margin-bottom: 25px; }
+        .post-meta { font-size: 0.85em; color: var(--text-muted); margin-bottom: 16px; display: flex; gap: 8px; flex-wrap: wrap; }
+        .post-meta span { background: var(--input-bg); padding: 4px 10px; border-radius: 6px; border: 1px solid var(--glass-border); color: var(--slate-blue); font-weight: bold;}
+        .post-excerpt { color: var(--text-dark); margin-bottom: 20px; font-size: 0.95rem; }
         
-        .video-wrapper { margin-bottom: 25px; border-radius: var(--radius-soft); overflow: hidden; background: #000; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid var(--glass-border); position: relative;}
+        .video-wrapper { margin-bottom: 20px; border-radius: 12px; overflow: hidden; background: #000; box-shadow: 0 4px 12px rgba(0,0,0,0.1); position: relative;}
         .video-container { position: relative; padding-bottom: 56.25%; height: 0; }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
         
-        /* CTA 區塊樣式 */
-        .cta-container { display: none; padding: 60px 20px; text-align: center; background: #f8fafc; flex-direction: column; justify-content: center; align-items: center; min-height: 45vw; }
+        .cta-container { display: none; padding: 40px 20px; text-align: center; background: #f8fafc; flex-direction: column; justify-content: center; align-items: center; min-height: 250px; }
         
-        .comment-item { background: var(--input-bg); padding: 16px; border-radius: 8px; margin-bottom: 16px; border-left: 4px solid var(--primary-yellow); font-size: 0.95rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05);}
+        .comment-item { background: var(--input-bg); padding: 16px; border-radius: 10px; margin-bottom: 12px; border-left: 4px solid var(--primary-yellow); font-size: 0.95rem; }
         .system-msg { text-align: center; color: var(--slate-blue); padding: 40px 20px; font-weight: bold; font-size: 1.1rem;}
 
-        @media (max-width: 600px) { 
-            body { padding: 20px 15px; } 
-            .section, .post-card { padding: 25px 20px; } 
-            #step-1, #step-2 div { flex-direction: column; align-items: stretch; gap: 5px; }
-            #email, #otp-code { max-width: 100% !important; margin-bottom: 5px !important;}
-            #login-section button { width: 100%; min-width: auto !important; margin-bottom: 5px !important; }
-            .post-title-row { flex-direction: column; }
-        }
+        /* 分隔線 */
+        hr { border: 0; border-top: 1px dashed var(--glass-border); margin: 20px 0; }
     </style>
 </head>
 <body>
@@ -114,86 +132,80 @@
     <h1>特洛伊AI影音直播區</h1>
 
     <div class="section" id="login-section">
-        <h3 style="margin-top:0;">會員通行證</h3>
+        <h3>會員通行證</h3>
         <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px;">
-            為保障會員權益，直播區需驗證身分方可進入。登入後可解鎖專屬限定內容並參與討論。
+            為保障會員權益，需驗證身分方可進入，解鎖專屬限定內容。
         </p>
         <p id="login-status" style="color: var(--primary-yellow); font-weight: bold; margin-bottom: 15px;">目前狀態：未登入 (訪客)</p>
         
-        <div id="step-1" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-start;">
-            <input type="email" id="email" class="input-box" placeholder="輸入會員 Email" style="flex: 2; max-width: 300px; margin-bottom: 0;">
-            <button onclick="requestOTP()" id="btn-otp" style="flex: 1; margin-bottom: 0; width: auto; min-width: 120px;">寄送驗證碼</button>
-            <span id="otp-msg" class="inline-msg" style="width: 100%; text-align: left;"></span>
+        <div id="step-1" class="form-group">
+            <input type="email" id="email" class="input-box" placeholder="輸入會員 Email">
+            <button onclick="requestOTP()" id="btn-otp">寄送驗證碼</button>
+            <span id="otp-msg" class="inline-msg"></span>
         </div>
         
-        <div id="step-2" style="display: none; margin-top: 10px;">
-            <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-start;">
-                <input type="text" id="otp-code" class="input-box" placeholder="輸入 6 位數驗證碼" style="flex: 2; max-width: 300px; margin-bottom: 0;">
-                <button onclick="verifyLogin()" id="btn-login" style="flex: 1; margin-bottom: 0; width: auto; min-width: 120px;">登入通行</button>
-                <button onclick="cancelLogin()" style="flex: 1; margin-bottom: 0; width: auto; min-width: 80px; background: var(--input-bg); color: var(--slate-blue); border: 1px solid var(--glass-border);">返回</button>
-            </div>
-            <span id="login-msg" class="inline-msg" style="width: 100%;"></span>
+        <div id="step-2" class="form-group" style="display: none;">
+            <input type="text" id="otp-code" class="input-box" placeholder="輸入 6 位數驗證碼">
+            <button onclick="verifyLogin()" id="btn-login">登入通行</button>
+            <button onclick="cancelLogin()" class="btn-outline">返回上一步</button>
+            <span id="login-msg" class="inline-msg"></span>
         </div>
         
-        <div id="logout-btn-container" style="display: none; margin-top: 25px; border-top: 1px dashed var(--glass-border); padding-top: 20px;">
-            <button onclick="logout()" style="background: var(--danger-color); width: auto; margin-bottom: 0;">登出切換帳號</button>
+        <div id="logout-btn-container" style="display: none;">
+            <hr>
+            <button onclick="logout()" class="btn-danger">登出 / 切換帳號</button>
         </div>
     </div>
 
     <div class="section admin-section" id="admin-panel" style="display: none;">
-        <h3 style="margin-top:0; color: var(--danger-color);">極速發布後台</h3>
+        <h3 style="color: var(--danger-color);">極速發布後台</h3>
         
-        <div style="background: #FFF; padding: 20px; border-radius: 12px; border: 1px solid #FECACA;">
-            
-            <div style="margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px dashed var(--glass-border);">
-                <strong style="color: var(--slate-blue); display: block; margin-bottom: 10px;">第一步：建立或開啟 Google Meet</strong>
-                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                    <input type="text" id="live-meetId" class="input-box" placeholder="Meet代碼 (必填：例如 igo-ttzz-djz)" style="flex: 2; min-width: 150px; margin-bottom: 0;">
-                    <button onclick="openMeet()" class="btn-outline" style="flex: 1; min-width: 150px; margin-bottom: 0; background: var(--input-bg);">🎥 先啟動 / 取得 Meet</button>
-                </div>
-                <span style="font-size: 0.85em; color: var(--text-muted); margin-top: 5px; display: block;">* 若尚未有會議，直接點擊按鈕可開啟新會議，請將產生後的代碼貼回左方欄位。</span>
-            </div>
+        <div class="form-group">
+            <strong style="color: var(--slate-blue);">第一步：建立或開啟 Google Meet</strong>
+            <input type="text" id="live-meetId" class="input-box" placeholder="Meet代碼 (例如 igo-ttzz-djz)">
+            <button onclick="openMeet()" class="btn-outline">🎥 先啟動 / 取得 Meet</button>
+            <span style="font-size: 0.85em; color: var(--text-muted);">* 點擊按鈕開啟新會議，再將代碼貼回欄位。</span>
+        </div>
 
-            <strong style="color: var(--slate-blue); display: block; margin-bottom: 10px;">第二步：填寫直播資訊並發布</strong>
+        <hr>
+
+        <div class="form-group">
+            <strong style="color: var(--slate-blue);">第二步：填寫直播資訊並發布</strong>
             <input type="text" id="live-title" class="input-box" placeholder="影片標題 (必填)">
             
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <select id="live-type" class="input-box" style="flex: 1; min-width: 150px;">
-                    <option value="互動直播">互動直播</option>
-                    <option value="課程直播">課程直播</option>
-                    <option value="實戰直播">實戰直播</option>
-                </select>
-                
-                <select id="live-visibility" class="input-box" style="flex: 1; min-width: 150px;" onchange="toggleEmailInput()">
-                    <option value="所有人">所有人</option>
-                    <option value="會員限定">會員限定</option>
-                    <option value="特定學員">特定學員 (請填寫Email)</option>
-                </select>
-            </div>
+            <select id="live-type" class="input-box">
+                <option value="互動直播">互動直播</option>
+                <option value="課程直播">課程直播</option>
+                <option value="實戰直播">實戰直播</option>
+            </select>
             
-            <input type="text" id="live-emails" class="input-box" placeholder="輸入學員 Email，多個請用半形逗號(,)隔開" style="display: none;">
+            <select id="live-visibility" class="input-box" onchange="toggleEmailInput()">
+                <option value="所有人">所有人</option>
+                <option value="會員限定">會員限定</option>
+                <option value="特定學員">特定學員 (請填寫Email)</option>
+            </select>
             
-            <input type="text" id="live-yt" class="input-box" placeholder="YouTube 網址或 ID (選填：可直接貼上直播網址，如 https://youtu.be/...)">
-
-            <textarea id="live-desc" class="input-box" placeholder="課程簡述 (選填)" rows="2"></textarea>
+            <input type="text" id="live-emails" class="input-box" placeholder="輸入學員 Email，多個用半形逗號(,)隔開" style="display: none;">
+            <input type="text" id="live-yt" class="input-box" placeholder="YouTube 網址或 ID (選填)">
+            <textarea id="live-desc" class="input-box" placeholder="課程簡述 (選填)" rows="3"></textarea>
             
-            <button onclick="submitLive()" id="btn-submit-live" class="btn-danger" style="margin-bottom: 0; padding: 16px; font-size: 1.1rem;">🚀 確認發布並顯示於前台</button>
-            <span id="live-msg" class="inline-msg" style="width: 100%; text-align: left;"></span>
+            <button onclick="submitLive()" id="btn-submit-live" class="btn-danger">🚀 確認發布並顯示於前台</button>
+            <span id="live-msg" class="inline-msg"></span>
         </div>
     </div>
 
     <div id="list-section" style="display: none;">
         
-        <input type="text" id="searchInput" class="search-box" placeholder="輸入關鍵字搜尋課程標題或內容..." oninput="filterPosts()">
+        <input type="text" id="searchInput" class="search-box" placeholder="輸入關鍵字搜尋課程..." oninput="filterPosts()">
         
         <div class="filter-section" id="filterSection">
             <div class="filter-title">直播類型</div>
             <div class="category-nav" id="type-container"></div>
             
             <div class="filter-title" style="margin-top: 10px;">發佈日期</div>
-            <div style="display: flex; gap: 10px; align-items: center;">
-                <input type="date" id="datePicker" class="input-box" style="width: auto; margin: 0;" onchange="handleDateChange()">
-                <button onclick="clearDateFilter()" class="cat-btn" style="background: var(--bg-pure);">清除</button>
+            <div class="form-group">
+                <input type="date" id="datePicker" class="input-box" onchange="handleDateChange()">
+                <button onclick="clearDateFilter()" class="btn-outline">清除日期</button>
             </div>
         </div>
 
@@ -201,34 +213,34 @@
         <div id="post-list"></div>
     </div>
 
-    <div class="section" id="detail-section" style="display: none; padding-top: 30px;">
-        <button onclick="backToList()" class="btn-outline" style="width: auto; margin-bottom: 20px;">返回課程列表</button>
+    <div class="section" id="detail-section" style="display: none;">
+        <button onclick="backToList()" class="btn-outline">返回課程列表</button>
         
-        <div class="post-meta" id="detail-meta" style="margin-top: 15px;"></div>
-        <h2 id="detail-title" style="margin-top: 5px; font-size: 2em; color: var(--text-dark);">載入中...</h2>
-        <hr style="border: 0; border-top: 1px solid var(--glass-border); margin: 25px 0;">
+        <div class="post-meta" id="detail-meta" style="margin-top: 20px;"></div>
+        <h2 id="detail-title" style="font-size: 1.6em; color: var(--text-dark);">載入中...</h2>
+        <hr>
         
         <div class="video-wrapper">
             <div id="video-player" class="video-container" style="display:none;">
                 <iframe id="video-iframe" src="" allowfullscreen></iframe>
             </div>
             <div id="cta-container" class="cta-container">
-                <h3 id="cta-message" style="color: var(--slate-blue); margin-bottom: 20px; line-height: 1.6; font-size: 1.4rem;">🔒 此為限定內容<br>請確認您的觀看權限</h3>
-                <button id="cta-btn" onclick="scrollToLogin()" style="width: auto; padding: 16px 32px; box-shadow: 0 4px 6px rgba(245, 158, 11, 0.2);">👉 立即登入 / 加入會員</button>
+                <h3 id="cta-message" style="color: var(--slate-blue); margin-bottom: 20px; line-height: 1.6; font-size: 1.2rem;">🔒 此為限定內容<br>請確認您的觀看權限</h3>
+                <button id="cta-btn" onclick="scrollToLogin()">👉 立即登入 / 加入會員</button>
             </div>
         </div>
 
-        <div id="detail-content" style="font-size: 1.1em; line-height: 1.8; margin-bottom: 30px; color: var(--text-dark);"></div>
+        <div id="detail-content" style="font-size: 1.05em; line-height: 1.8; margin-bottom: 30px; color: var(--text-dark);"></div>
         
         <div id="comment-section">
-            <h3 style="border-bottom: 2px solid var(--glass-border); padding-bottom: 10px; font-size: 1.2rem; color: var(--slate-blue);">留言討論區</h3>
-            <div id="comments-list" style="margin-top: 20px;"></div>
+            <h3 style="border-bottom: 2px solid var(--glass-border); padding-bottom: 10px; font-size: 1.2rem;">留言討論區</h3>
+            <div id="comments-list" style="margin-top: 16px;"></div>
             
-            <div style="margin-top:20px; border-top: 2px solid var(--glass-border); padding-top: 20px;">
-                <strong style="color:var(--slate-blue); display:block; margin-bottom:10px;">新增留言</strong>
-                <textarea id="new-comment" class="input-box" placeholder="留下您的心得或問題..." rows="3" style="margin-bottom: 10px;"></textarea>
-                <button onclick="submitComment()" id="btn-submit-comment" style="width: auto; margin-bottom: 0;">送出留言</button>
-                <span id="comment-msg" class="inline-msg" style="width: 100%; text-align: left;"></span>
+            <div class="form-group" style="margin-top:20px; border-top: 2px solid var(--glass-border); padding-top: 20px;">
+                <strong style="color:var(--slate-blue);">新增留言</strong>
+                <textarea id="new-comment" class="input-box" placeholder="留下您的心得或問題..." rows="3"></textarea>
+                <button onclick="submitComment()" id="btn-submit-comment">送出留言</button>
+                <span id="comment-msg" class="inline-msg"></span>
             </div>
         </div>
     </div>
@@ -247,7 +259,6 @@
         let currentType = '全部';
         let currentDate = '';
 
-        // 🎯 新增：檢查是否已經登入過，且未超過 1 小時
         function checkAutoLogin() {
             const savedEmail = localStorage.getItem('troy_user_email');
             const loginTime = localStorage.getItem('troy_login_time');
@@ -255,10 +266,9 @@
             if (savedEmail && loginTime) {
                 const now = new Date().getTime();
                 const timeDiff = now - parseInt(loginTime);
-                const oneHour = 60 * 60 * 1000; // 1小時的毫秒數
+                const oneHour = 60 * 60 * 1000;
 
                 if (timeDiff < oneHour) {
-                    // 尚未過期，自動執行登入畫面切換
                     currentUserEmail = savedEmail;
                     document.getElementById('login-status').innerText = `已登入學員：${currentUserEmail}`;
                     document.getElementById('step-1').style.display = 'none';
@@ -268,29 +278,21 @@
                     if(currentUserEmail.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
                         document.getElementById('admin-panel').style.display = 'block';
                     }
-                    
-                    // 刷新一下儲存的時間，讓 1 小時重新計算 (可選)
                     localStorage.setItem('troy_login_time', now);
                 } else {
-                    // 已經超過 1 小時，清除過期的紀錄
                     localStorage.removeItem('troy_user_email');
                     localStorage.removeItem('troy_login_time');
                 }
             }
         }
 
-        // 一載入網頁就立刻去抓清單
         window.onload = function() {
             document.getElementById('list-section').style.display = 'block';
-            renderTypeFilter(); // 渲染篩選器按鈕
-            
-            // 🎯 新增：網頁一載入就先檢查有沒有通行證
+            renderTypeFilter(); 
             checkAutoLogin(); 
-            
             fetchLiveData();
         };
 
-        // 🎯 渲染類別篩選器按鈕
         function renderTypeFilter() {
             const container = document.getElementById('type-container'); 
             container.innerHTML = '';
@@ -303,11 +305,8 @@
             });
         }
 
-        // 🎯 處理日期變更與清除
         function handleDateChange() { currentDate = document.getElementById('datePicker').value; renderList(); }
         function clearDateFilter() { document.getElementById('datePicker').value = ''; currentDate = ''; renderList(); }
-        
-        // 🎯 處理關鍵字搜尋
         function filterPosts() { currentSearchQuery = document.getElementById('searchInput').value.toLowerCase().trim(); renderList(); }
 
         function toggleEmailInput() {
@@ -336,7 +335,7 @@
                 document.getElementById('btn-otp').innerText = "寄送驗證碼";
                 if (data.status === "error") return showMsg('otp-msg', data.message, true);
                 document.getElementById('step-1').style.display = 'none';
-                document.getElementById('step-2').style.display = 'block';
+                document.getElementById('step-2').style.display = 'flex'; // 修正顯示方式
                 showMsg('login-msg', '驗證碼已寄出，請去信箱查看');
             }).catch(() => { 
                 document.getElementById('btn-otp').innerText = "寄送驗證碼"; 
@@ -361,7 +360,6 @@
                 document.getElementById('step-2').style.display = 'none';
                 document.getElementById('logout-btn-container').style.display = 'block';
                 
-                // 🎯 新增：登入成功時，把 Email 和當下時間存入瀏覽器
                 localStorage.setItem('troy_user_email', currentUserEmail);
                 localStorage.setItem('troy_login_time', new Date().getTime());
                 
@@ -369,7 +367,6 @@
                     document.getElementById('admin-panel').style.display = 'block';
                 }
                 
-                // 無縫解鎖體驗
                 if(document.getElementById('detail-section').style.display === 'block' && currentPost) {
                     enterClass(currentPost.courseId);
                 } else {
@@ -395,7 +392,6 @@
             document.getElementById('detail-section').style.display = 'none';
             document.getElementById('list-section').style.display = 'block';
             
-            // 🎯 新增：登出時清除瀏覽器紀錄
             localStorage.removeItem('troy_user_email');
             localStorage.removeItem('troy_login_time');
 
@@ -416,10 +412,8 @@
             const listContainer = document.getElementById('post-list');
             listContainer.innerHTML = ''; 
 
-            // 🎯 新增：篩選邏輯
             let filtered = allLiveData;
             
-            // 1. 關鍵字搜尋 (比對標題、內容、類型、課程編號)
             if (currentSearchQuery) {
                 filtered = filtered.filter(p => 
                     (p.title && p.title.toLowerCase().includes(currentSearchQuery)) || 
@@ -429,22 +423,18 @@
                 );
             }
             
-            // 2. 類別篩選
             if (currentType !== '全部') {
                 filtered = filtered.filter(p => p.type === currentType);
             }
             
-            // 3. 日期篩選
             if (currentDate) {
                 filtered = filtered.filter(p => p.date && p.date.includes(currentDate));
             }
 
-            // 若篩選後無資料
             if (filtered.length === 0) {
                 return listContainer.innerHTML = '<p class="system-msg">目前沒有符合條件的紀錄喔！</p>';
             }
 
-            // 渲染過濾後的清單
             filtered.forEach(post => {
                 const viewersCount = post.viewers ? post.viewers.split(',').length : 0;
                 const commentsCount = post.comments ? post.comments.length : 0;
@@ -465,14 +455,13 @@
                             </div>
                         </div>
                         <div class="post-meta">
-                            <span>課程編號：${post.courseId}</span>
-                            <span>發佈人：${post.publisher}</span>
-                            <span>發佈日期：${post.date}</span>
-                            <span>👥 ${viewersCount} 人入場</span>
-                            <span>💬 ${commentsCount} 則留言</span>
+                            <span>編號：${post.courseId}</span>
+                            <span>日期：${post.date}</span>
+                            <span>👥 ${viewersCount} 入場</span>
+                            <span>💬 ${commentsCount} 留言</span>
                         </div>
                         <div class="post-excerpt">${post.description || '無內容簡述'}</div>
-                        <button onclick="enterClass('${post.courseId}')" style="margin-bottom:0; width: auto;">入場觀看</button>
+                        <button onclick="enterClass('${post.courseId}')">入場觀看</button>
                     </div>`;
             });
         }
@@ -491,8 +480,8 @@
 
             document.getElementById('detail-title').innerText = currentPost.title;
             document.getElementById('detail-meta').innerHTML = `
-                <span>課程編號: ${currentPost.courseId}</span> 
-                <span>發佈日期: ${currentPost.date}</span>
+                <span>編號: ${currentPost.courseId}</span> 
+                <span>日期: ${currentPost.date}</span>
                 <span>類型: ${currentPost.type || '無'}</span>
             `;
             
@@ -522,7 +511,7 @@
                     if (allowedEmails.includes(currentUserEmail)) {
                         canWatch = true;
                     } else {
-                        ctaMessage = "⛔ 您目前登入的帳號無權限觀看此專屬內容。<br>請確認您使用的是正確的 Email 登入。";
+                        ctaMessage = "⛔ 您目前的帳號無權觀看此專屬內容。<br>請確認使用正確的 Email 登入。";
                         showLoginBtn = false;
                     }
                 }
@@ -543,7 +532,7 @@
                 iframe.src = '';
                 ctaContainer.style.display = 'flex';
                 document.getElementById('cta-message').innerHTML = ctaMessage;
-                document.getElementById('cta-btn').style.display = showLoginBtn ? 'inline-block' : 'none';
+                document.getElementById('cta-btn').style.display = showLoginBtn ? 'flex' : 'none';
             }
 
             document.getElementById('detail-content').innerText = currentPost.description;
@@ -586,33 +575,26 @@
             });
         }
 
-        // 🎯 獨立處理開啟 Google Meet 的函數
         function openMeet() {
             const meetId = document.getElementById('live-meetId').value.trim();
             if (meetId) {
-                // 如果已經填寫了代碼，就直接開啟該會議
                 window.open('https://meet.google.com/' + meetId, '_blank');
             } else {
-                // 如果沒填寫，開啟 Meet 首頁來建立新會議
                 window.open('https://meet.google.com/new', '_blank');
                 showMsg('live-msg', '請在新視窗建立會議後，將「會議代碼」貼回上方欄位！');
             }
         }
 
-        // 🎯 修改：送出直播資訊 (加入自動萃取 YouTube ID 的邏輯)
         function submitLive() {
             const title = document.getElementById('live-title').value.trim();
             const meetId = document.getElementById('live-meetId').value.trim();
             const type = document.getElementById('live-type').value;
             
-            // 🎯 【修改重點】處理 YouTube 網址，利用正規表達式自動擷取 11 碼 ID
             let rawYtInput = document.getElementById('live-yt').value.trim();
             let finalYtId = rawYtInput; 
             if (rawYtInput) {
-                // 這個 Regex 可以匹配 watch?v=, youtu.be/, live/ 等各種 YouTube 網址格式
                 const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|live\/)([^#\&\?]*).*/;
                 const match = rawYtInput.match(regExp);
-                // 如果有匹配到，且長度剛好是 YouTube ID 規範的 11 碼，就替換為 ID
                 if (match && match[2].length === 11) {
                     finalYtId = match[2];
                 }
@@ -639,7 +621,7 @@
                     type: type,
                     visibility: visibility,
                     meetId: meetId,
-                    youtubeId: finalYtId, // 傳送處理過乾淨的 YouTube ID 到後端
+                    youtubeId: finalYtId, 
                     description: document.getElementById('live-desc').value
                 })
             }).then(() => {
