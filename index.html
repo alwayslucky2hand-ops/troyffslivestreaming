@@ -173,7 +173,7 @@
             
             <input type="text" id="live-emails" class="input-box" placeholder="輸入學員 Email，多個請用半形逗號(,)隔開" style="display: none;">
             
-            <input type="text" id="live-yt" class="input-box" placeholder="YouTube_ID (選填：例如 dQw4w9WgXcQ)">
+            <input type="text" id="live-yt" class="input-box" placeholder="YouTube 網址或 ID (選填：可直接貼上直播網址，如 https://youtu.be/...)">
 
             <textarea id="live-desc" class="input-box" placeholder="課程簡述 (選填)" rows="2"></textarea>
             
@@ -586,7 +586,7 @@
             });
         }
 
-        // 🎯 新增：獨立處理開啟 Google Meet 的函數
+        // 🎯 獨立處理開啟 Google Meet 的函數
         function openMeet() {
             const meetId = document.getElementById('live-meetId').value.trim();
             if (meetId) {
@@ -599,12 +599,24 @@
             }
         }
 
-        // 🎯 修改：送出直播資訊 (移除自動開啟 Meet 的動作，純發布)
+        // 🎯 修改：送出直播資訊 (加入自動萃取 YouTube ID 的邏輯)
         function submitLive() {
             const title = document.getElementById('live-title').value.trim();
-            const ytId = document.getElementById('live-yt').value.trim();
             const meetId = document.getElementById('live-meetId').value.trim();
             const type = document.getElementById('live-type').value;
+            
+            // 🎯 【修改重點】處理 YouTube 網址，利用正規表達式自動擷取 11 碼 ID
+            let rawYtInput = document.getElementById('live-yt').value.trim();
+            let finalYtId = rawYtInput; 
+            if (rawYtInput) {
+                // 這個 Regex 可以匹配 watch?v=, youtu.be/, live/ 等各種 YouTube 網址格式
+                const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|live\/)([^#\&\?]*).*/;
+                const match = rawYtInput.match(regExp);
+                // 如果有匹配到，且長度剛好是 YouTube ID 規範的 11 碼，就替換為 ID
+                if (match && match[2].length === 11) {
+                    finalYtId = match[2];
+                }
+            }
             
             let visibility = document.getElementById('live-visibility').value;
             if (visibility === '特定學員') {
@@ -627,7 +639,7 @@
                     type: type,
                     visibility: visibility,
                     meetId: meetId,
-                    youtubeId: ytId, 
+                    youtubeId: finalYtId, // 傳送處理過乾淨的 YouTube ID 到後端
                     description: document.getElementById('live-desc').value
                 })
             }).then(() => {
