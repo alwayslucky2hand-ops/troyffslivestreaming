@@ -141,10 +141,20 @@
     </div>
 
     <div class="section admin-section" id="admin-panel" style="display: none;">
-        <h3 style="margin-top:0; color: var(--danger-color);">極速發布後台 (填寫後一鍵開啟直播)</h3>
+        <h3 style="margin-top:0; color: var(--danger-color);">極速發布後台</h3>
         
         <div style="background: #FFF; padding: 20px; border-radius: 12px; border: 1px solid #FECACA;">
             
+            <div style="margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px dashed var(--glass-border);">
+                <strong style="color: var(--slate-blue); display: block; margin-bottom: 10px;">第一步：建立或開啟 Google Meet</strong>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <input type="text" id="live-meetId" class="input-box" placeholder="Meet代碼 (必填：例如 igo-ttzz-djz)" style="flex: 2; min-width: 150px; margin-bottom: 0;">
+                    <button onclick="openMeet()" class="btn-outline" style="flex: 1; min-width: 150px; margin-bottom: 0; background: var(--input-bg);">🎥 先啟動 / 取得 Meet</button>
+                </div>
+                <span style="font-size: 0.85em; color: var(--text-muted); margin-top: 5px; display: block;">* 若尚未有會議，直接點擊按鈕可開啟新會議，請將產生後的代碼貼回左方欄位。</span>
+            </div>
+
+            <strong style="color: var(--slate-blue); display: block; margin-bottom: 10px;">第二步：填寫直播資訊並發布</strong>
             <input type="text" id="live-title" class="input-box" placeholder="影片標題 (必填)">
             
             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
@@ -163,14 +173,11 @@
             
             <input type="text" id="live-emails" class="input-box" placeholder="輸入學員 Email，多個請用半形逗號(,)隔開" style="display: none;">
             
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <input type="text" id="live-meetId" class="input-box" placeholder="Meet代碼 (必填：例如 igo-ttzz-djz)" style="flex: 1; min-width: 150px;">
-                <input type="text" id="live-yt" class="input-box" placeholder="YouTube_ID (選填：例如 dQw4w9WgXcQ)" style="flex: 1; min-width: 150px;">
-            </div>
+            <input type="text" id="live-yt" class="input-box" placeholder="YouTube_ID (選填：例如 dQw4w9WgXcQ)">
 
             <textarea id="live-desc" class="input-box" placeholder="課程簡述 (選填)" rows="2"></textarea>
             
-            <button onclick="submitLive()" id="btn-submit-live" class="btn-danger" style="margin-bottom: 0; padding: 16px; font-size: 1.1rem;">🚀 發布課程並開啟 Meet</button>
+            <button onclick="submitLive()" id="btn-submit-live" class="btn-danger" style="margin-bottom: 0; padding: 16px; font-size: 1.1rem;">🚀 確認發布並顯示於前台</button>
             <span id="live-msg" class="inline-msg" style="width: 100%; text-align: left;"></span>
         </div>
     </div>
@@ -579,6 +586,20 @@
             });
         }
 
+        // 🎯 新增：獨立處理開啟 Google Meet 的函數
+        function openMeet() {
+            const meetId = document.getElementById('live-meetId').value.trim();
+            if (meetId) {
+                // 如果已經填寫了代碼，就直接開啟該會議
+                window.open('https://meet.google.com/' + meetId, '_blank');
+            } else {
+                // 如果沒填寫，開啟 Meet 首頁來建立新會議
+                window.open('https://meet.google.com/new', '_blank');
+                showMsg('live-msg', '請在新視窗建立會議後，將「會議代碼」貼回上方欄位！');
+            }
+        }
+
+        // 🎯 修改：送出直播資訊 (移除自動開啟 Meet 的動作，純發布)
         function submitLive() {
             const title = document.getElementById('live-title').value.trim();
             const ytId = document.getElementById('live-yt').value.trim();
@@ -596,7 +617,7 @@
             if(!title) return showMsg('live-msg', '影片標題為必填！', true);
             if(!meetId) return showMsg('live-msg', 'Meet 代碼為必填！', true);
             
-            btn.disabled = true; btn.innerText = "發布中，準備入場...";
+            btn.disabled = true; btn.innerText = "發布中，請稍候...";
 
             fetch(GAS_LIVE_URL, {
                 method: 'POST',
@@ -610,9 +631,8 @@
                     description: document.getElementById('live-desc').value
                 })
             }).then(() => {
-                showMsg('live-msg', '直播發布成功！正在為您開啟 Google Meet...');
-                window.open('https://meet.google.com/' + meetId, '_blank');
-                btn.disabled = false; btn.innerText = "🚀 發布課程並開啟 Meet";
+                showMsg('live-msg', '✅ 直播發布成功！已顯示在下方課程清單中。');
+                btn.disabled = false; btn.innerText = "🚀 確認發布並顯示於前台";
                 document.getElementById('live-title').value = ''; 
                 document.getElementById('live-yt').value = ''; 
                 document.getElementById('live-meetId').value = ''; 
@@ -621,7 +641,7 @@
                 fetchLiveData(); 
             }).catch(err => {
                 showMsg('live-msg', '網路連線錯誤，請稍後再試。', true);
-                btn.disabled = false; btn.innerText = "🚀 發布課程並開啟 Meet";
+                btn.disabled = false; btn.innerText = "🚀 確認發布並顯示於前台";
             });
         }
 
